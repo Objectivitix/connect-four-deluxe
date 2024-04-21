@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Game {
@@ -37,16 +38,9 @@ public class Game {
     }
 
     public Player checkWin() {
-        for (int i = 0; i < LENGTH; i++) {
-            for (int j = 0; j < WIDTH; j++) {
-                for (Player[] four : getPossibleConnectFours(i, j)) {
-                    Player winner = checkConnectFour(four);
-
-                    if (winner != null) {
-                        return winner;
-                    }
-                }
-            }
+        for (String line : getLines()) {
+            if (line.contains("XXXX")) return Player.X;
+            if (line.contains("OOOO")) return Player.O;
         }
 
         return null;
@@ -59,61 +53,83 @@ public class Game {
 
         System.out.println(LENGTH);
 
-        for (int j = WIDTH - 1; j >= 0; j--) {
-            for (Player[] column : board) {
-                if (column[j] == null) System.out.print("_  ");
-                else System.out.print(column[j] + "  ");
+        for (Player[] row : getRotatedBoard()) {
+            for (Player piece : row) {
+                if (piece == null) System.out.print("_  ");
+                else System.out.print(piece + "  ");
             }
 
             System.out.println();
         }
     }
 
-    private List<Player[]> getPossibleConnectFours(int i, int j) {
-        List<Player[]> fours = new ArrayList<>();
+    public List<String> getLines() {
+        List<String> lines = new ArrayList<>();
 
-        // direction 1: right
-        if (j + 3 < WIDTH) {
-            fours.add(new Player[]{
-                board[i][j], board[i][j + 1], board[i][j + 2], board[i][j + 3]
-            });
+        for (Player[] lineArr : _getLines()) {
+            StringBuilder lineStr = new StringBuilder();
+
+            for (Player piece : lineArr) {
+                if (piece == null) lineStr.append("_");
+                else lineStr.append(piece);
+            }
+
+            lines.add(lineStr.toString());
         }
 
-        // direction 2: down-right
-        if (i + 3 < LENGTH && j + 3 < WIDTH) {
-            fours.add(new Player[]{
-                board[i][j], board[i + 1][j + 1], board[i + 2][j + 2], board[i + 3][j + 3]
-            });
-        }
-
-        // direction 3: down
-        if (i + 3 < LENGTH) {
-            fours.add(new Player[]{
-                board[i][j], board[i + 1][j], board[i + 2][j], board[i + 3][j]
-            });
-        }
-
-        // direction 4: down-left
-        if (i + 3 < LENGTH && j - 3 >= 0) {
-            fours.add(new Player[]{
-                board[i][j], board[i + 1][j - 1], board[i + 2][j - 2], board[i + 3][j - 3]
-            });
-        }
-
-        return fours;
+        return lines;
     }
 
-    private Player checkConnectFour(Player[] four) {
-        boolean allXs = true;
-        boolean allOs = true;
+    private List<Player[]> _getLines() {
+        List<Player[]> lines = new ArrayList<>();
 
-        for (Player piece : four) {
-            if (piece != Player.X) allXs = false;
-            if (piece != Player.O) allOs = false;
+        // 1. rows
+        Collections.addAll(lines, board);
+
+        // 2. columns
+        Collections.addAll(lines, getRotatedBoard());
+
+        // 3. / diagonals
+        for (int j = 3; j < WIDTH; j++)
+            lines.add(getDiagonal(0, j, false));
+        for (int i = 1; i < 4; i++)
+            lines.add(getDiagonal(i, WIDTH - 1, false));
+
+        // 4. \ diagonals
+        for (int j = 0; j < 3; j++)
+            lines.add(getDiagonal(0, j, true));
+        for (int i = 1; i < 4; i++)
+            lines.add(getDiagonal(i, 0, true));
+
+        return lines;
+    }
+
+    private Player[][] getRotatedBoard() {
+        Player[][] rotatedBoard = new Player[WIDTH][LENGTH];
+
+        for (int i = 0; i < LENGTH; i++) {
+            for (int j = 0; j < WIDTH; j++) {
+                rotatedBoard[j][i] = board[i][WIDTH - j - 1];
+            }
         }
 
-        if (allXs) return Player.X;
-        else if (allOs) return Player.O;
-        else return null;
+        return rotatedBoard;
+    }
+
+    private Player[] getDiagonal(int iStart, int jStart, boolean otherWay) {
+        List<Player> diag = new ArrayList<>();
+
+        int i = iStart;
+        int j = jStart;
+
+        while (i < LENGTH && j >= 0 && j < WIDTH) {
+            diag.add(board[i][j]);
+
+            i++;
+            if (otherWay) j++;
+            else j--;
+        }
+
+        return diag.toArray(new Player[0]);
     }
 }
