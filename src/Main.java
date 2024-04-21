@@ -1,7 +1,11 @@
 import java.util.Scanner;
 
 public class Main {
-    public static int getMove(Scanner console, Game game, Player player) {
+    public static final Scanner console = new Scanner(System.in);
+    public static Game game;
+    public static Bot bot;
+
+    public static int getMove(Player player) {
         int move;
         System.out.print(player + ", make your move (enter 1-7): ");
 
@@ -24,9 +28,22 @@ public class Main {
         return move - 1;
     }
 
+    public static void playTurn(Player player, boolean botInvolved) {
+        int move = (botInvolved && player == Player.O) ?
+            bot.getRandomMove() : getMove(player);
+
+        game.makeMove(player, move);
+
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+        game.printBoard();
+        System.out.println();
+    }
+
     public static void main(String[] args) {
-        Scanner console = new Scanner(System.in);
-        Game game = new Game();
+        game = new Game();
+        bot = new Bot(game);
+        boolean botInvolved = true;
 
         System.out.println("Welcome to Connect 4!");
         System.out.println("X goes first.");
@@ -39,12 +56,7 @@ public class Main {
         Player winner;
 
         while ((winner = game.checkWin()) == null && !game.isTie()) {
-            game.makeMove(currPlayer, getMove(console, game, currPlayer));
-
-            System.out.print("\033[H\033[2J");
-            System.out.flush();
-            game.printBoard();
-            System.out.println();
+            playTurn(currPlayer, botInvolved);
 
             if (currPlayer == Player.X) currPlayer = Player.O;
             else currPlayer = Player.X;
