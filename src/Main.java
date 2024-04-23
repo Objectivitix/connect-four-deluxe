@@ -4,6 +4,7 @@ public class Main {
     public static final Scanner console = new Scanner(System.in);
     public static Game game;
     public static Bot bot;
+    public static Bot bot2;
 
     public static int getMove(Player player) {
         int move;
@@ -28,9 +29,9 @@ public class Main {
         return move - 1;
     }
 
-    public static void playTurn(Player player, boolean botInvolved) {
-        int move = (botInvolved && player == Player.O) ?
-            bot.getRandomMove() : getMove(player);
+    public static void playTurn(Player player) {
+        int move = (bot != null && player == bot.player) ?
+            bot.getOptimalMove() : bot2.getOptimalMove();
 
         game.makeMove(player, move);
 
@@ -42,8 +43,8 @@ public class Main {
 
     public static void main(String[] args) {
         game = new Game();
-        bot = new Bot(game);
-        boolean botInvolved = true;
+        bot = new Bot(game, Player.O, 4);
+        bot2 = new Bot(game, Player.X, 4);
 
         System.out.println("Welcome to Connect 4!");
         System.out.println("X goes first.");
@@ -56,7 +57,7 @@ public class Main {
         Player winner;
 
         while ((winner = game.checkWin()) == null && !game.isTie()) {
-            playTurn(currPlayer, botInvolved);
+            playTurn(currPlayer);
 
             if (currPlayer == Player.X) currPlayer = Player.O;
             else currPlayer = Player.X;

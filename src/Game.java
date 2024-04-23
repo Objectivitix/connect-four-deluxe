@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -16,6 +17,20 @@ public class Game {
         for (int i = 0; i < LENGTH; i++) {
             firstEmptyIndices[i] = 0;
         }
+    }
+
+    private Game(Player[][] board, int[] firstEmptyIndices) {
+        this.board = new Player[LENGTH][WIDTH];
+
+        for (int i = 0; i < LENGTH; i++) {
+            this.board[i] = Arrays.copyOf(board[i], WIDTH);
+        }
+
+        this.firstEmptyIndices = Arrays.copyOf(firstEmptyIndices, LENGTH);
+    }
+
+    public Game deepCopy() {
+        return new Game(board, firstEmptyIndices);
     }
 
     public boolean isValidMove(int i) {
