@@ -52,7 +52,7 @@ public class Bot {
             if (realGame.isValidMove(i)) {
                 Game succ = realGame.deepCopy();
                 succ.makeMove(player, i);
-                long result = minimax(succ, opp, 1);
+                long result = minimax(succ, opp, 1, -MY_INF, MY_INF);
                 if (result >= max) {
                     max = result;
                     move = i;
@@ -63,8 +63,9 @@ public class Bot {
         return move;
     }
 
-    public long minimax(Game state, Player currPlayer, int depth) {
+    public long minimax(Game state, Player currPlayer, int depth, long alpha, long beta) {
         Player winner = state.checkWin();
+
         if (winner == player) return MY_INF;
         if (winner == opp) return -MY_INF;
         if (state.isTie()) return 0;
@@ -77,7 +78,9 @@ public class Bot {
             long max = -MY_INF;
 
             for (Game succ : getSuccessors(state, player)) {
-                max = Math.max(max, minimax(succ, opp, depth + 1));
+                max = Math.max(max, minimax(succ, opp, depth + 1, alpha, beta));
+                if (max >= beta) return max;
+                alpha = Math.max(alpha, max);
             }
 
             return max;
@@ -86,7 +89,9 @@ public class Bot {
         long min = MY_INF;
 
         for (Game succ : getSuccessors(state, opp)) {
-            min = Math.min(min, minimax(succ, player, depth + 1));
+            min = Math.min(min, minimax(succ, player, depth + 1, alpha, beta));
+            if (min <= alpha) return min;
+            beta = Math.min(beta, min);
         }
 
         return min;
