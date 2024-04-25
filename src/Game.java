@@ -1,24 +1,28 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class Game {
+    // board size for Connect 4
     private static final int LENGTH = 7;
     private static final int WIDTH = 6;
 
+    // for easy storage & move-making, `board` is actually
+    // the true game board turned 90 degrees clockwise
     private final Player[][] board;
+
+    // stores "where we're at" for each column
     private final int[] firstEmptyIndices;
 
     public Game() {
         board = new Player[LENGTH][WIDTH];
         firstEmptyIndices = new int[LENGTH];
 
+        // initialize to 0 because no pieces yet
         for (int i = 0; i < LENGTH; i++) {
             firstEmptyIndices[i] = 0;
         }
     }
 
+    // private parameterized constructor used for deep copy
     private Game(Player[][] board, int[] firstEmptyIndices) {
         this.board = new Player[LENGTH][WIDTH];
 
@@ -34,10 +38,12 @@ public class Game {
     }
 
     public boolean isValidMove(int i) {
+        // the column is full when this index > WIDTH
         return firstEmptyIndices[i] < WIDTH;
     }
 
     public void makeMove(Player player, int i) {
+        // use the first empty index to "drop" a new piece
         board[i][firstEmptyIndices[i]] = player;
         firstEmptyIndices[i]++;
     }
@@ -49,25 +55,30 @@ public class Game {
             }
         }
 
+        // if we make it here, all columns must be full
         return true;
     }
 
     public Player checkWin() {
+        // game line with four-in-a-row means there's a win
         for (String line : getLines()) {
             if (line.contains("XXXX")) return Player.X;
             if (line.contains("OOOO")) return Player.O;
         }
 
+        // making it here means no wins so far (or tied)
         return null;
     }
 
     public void printBoard() {
+        // print out column numbers for UX
         for (int i = 1; i < LENGTH; i++) {
             System.out.print(i + "  ");
         }
 
         System.out.println(LENGTH);
 
+        // get the actual board and print row by row
         for (Player[] row : getRotatedBoard()) {
             for (Player piece : row) {
                 if (piece == null) System.out.print("_  ");
@@ -78,9 +89,11 @@ public class Game {
         }
     }
 
+    // gets "game lines" of the board as strings
     public List<String> getLines() {
         List<String> lines = new ArrayList<>();
 
+        // turn each game line array into a string
         for (Player[] lineArr : _getLines()) {
             StringBuilder lineStr = new StringBuilder();
 
@@ -96,6 +109,11 @@ public class Game {
     }
 
     private List<Player[]> _getLines() {
+        // Consider the game board as rows, columns, and diagonals. These
+        // are lines on which war is waged. Designing the program this way
+        // facilitates win and AI logic because we can leverage pre-built
+        // string manipulation methods.
+
         List<Player[]> lines = new ArrayList<>();
 
         // 1. rows
@@ -104,13 +122,13 @@ public class Game {
         // 2. columns
         Collections.addAll(lines, getRotatedBoard());
 
-        // 3. / diagonals
+        // 3. diagonals like /
         for (int j = 3; j < WIDTH; j++)
             lines.add(getDiagonal(0, j, false));
         for (int i = 1; i < 4; i++)
             lines.add(getDiagonal(i, WIDTH - 1, false));
 
-        // 4. \ diagonals
+        // 4. diagonals like \
         for (int j = 0; j < 3; j++)
             lines.add(getDiagonal(0, j, true));
         for (int i = 1; i < 4; i++)
@@ -119,6 +137,7 @@ public class Game {
         return lines;
     }
 
+    // rotate the board 90 degrees cc to get true game board
     private Player[][] getRotatedBoard() {
         Player[][] rotatedBoard = new Player[WIDTH][LENGTH];
 
@@ -131,6 +150,7 @@ public class Game {
         return rotatedBoard;
     }
 
+    // get a diagonal line of the board from starting coords
     private Player[] getDiagonal(int iStart, int jStart, boolean otherWay) {
         List<Player> diag = new ArrayList<>();
 
@@ -141,6 +161,8 @@ public class Game {
             diag.add(board[i][j]);
 
             i++;
+
+            // so we have diagonals shaped both like / and \
             if (otherWay) j++;
             else j--;
         }
