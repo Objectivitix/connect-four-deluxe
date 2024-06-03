@@ -48,6 +48,12 @@ public class Game {
         firstEmptyIndices[i]++;
     }
 
+    // used by bot minimax to generate new successor state
+    public void unmakeMove(int i) {
+        firstEmptyIndices[i]--;
+        board[i][firstEmptyIndices[i]] = null;
+    }
+
     public boolean isTie() {
         for (int k : firstEmptyIndices) {
             if (k < WIDTH) {

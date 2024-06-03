@@ -38,7 +38,7 @@ public class Main {
     }
 
     public static void playTurn(Player player) {
-        // if there's a bot and it's their turn, do that instead
+        // if there's a bot, and it's its turn, let it play
         int move = (bot != null && player == bot.player) ?
             bot.getOptimalMove() : getMove(player);
 
@@ -56,7 +56,7 @@ public class Main {
     public static void main(String[] args) {
         // initialize game and bot
         game = new Game();
-        bot = new Bot(game, Player.O, 5);
+        bot = new Bot(game, Player.O, 6);
 
         JFrame frame = new JFrame("Connect 4");
         ImageIcon icon = new ImageIcon("connect4.jpg");

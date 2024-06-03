@@ -13,8 +13,10 @@ public class Bot {
     // enough to be free of overflow concerns
     private static final int MY_INF = 999_999_999;
 
+    private static final int[] PSEUDOMOVES = {3, 2, 4, 1, 5, 0, 6};
+
     // map of board feature regexes to their weights
-    // (so three-in-a-row w/ adjacent spaces has weight 1_000_000)
+    // (ex. 3-in-a-row w/ adjacent spaces has weight 1_000_000)
     private static final Map<Pattern, Integer> FEATURE_WEIGHTS = Map.of(
         Pattern.compile("_AAA_"), 1_000_000,
         Pattern.compile("_AAA(B|$)|(B|^)AAA_"), 300_000,
@@ -26,6 +28,7 @@ public class Bot {
 
     // the actual game, contrasting with simulations the bot runs
     private final Game realGame;
+    private Game simGame;
 
     // who the bot represents and its opponent
     public final Player player;
@@ -49,14 +52,16 @@ public class Bot {
         long max = -MY_INF;
         int move = -1;
 
-        for (int i = 0; i < 7; i++) {
-            if (realGame.isValidMove(i)) {
-                // if it's a valid move, we make a successor
-                Game succ = realGame.deepCopy();
-                succ.makeMove(player, i);
+        simGame = realGame.deepCopy();
+
+        for (int i : PSEUDOMOVES) {
+            if (simGame.isValidMove(i)) {
+                simGame.makeMove(player, i);
 
                 // search this successor state recursively
-                long result = minimax(succ, opp, 1, -MY_INF, MY_INF);
+                long result = minimax(opp, 1, -MY_INF, MY_INF);
+
+                simGame.unmakeMove(i);
 
                 // record move associated with maximum gains
                 if (result >= max) {
@@ -69,36 +74,42 @@ public class Bot {
         return move;
     }
 
-    private long minimax(Game state, Player currPlayer, int depth, long alpha, long beta) {
-        Player winner = state.checkWin();
+    private long minimax(Player currPlayer, int depth, long alpha, long beta) {
+        Player winner = simGame.checkWin();
 
         // terminal nodes: win +∞, loss -∞, tie 0
         if (winner == player) return MY_INF;
         if (winner == opp) return -MY_INF;
-        if (state.isTie()) return 0;
+        if (simGame.isTie()) return 0;
 
         // nodes reaching cutoff need not be explored
         // further; just calculate board heuristic
         if (depth == maxDepth) {
-            return calculateHeuristic(state);
+            return calculateHeuristic();
         }
 
         // start simulating! if BOT's playing, maximize
         if (currPlayer == player) {
             long max = -MY_INF;
 
-            // make all possible moves, and for each resulting game state ...
-            for (Game succ : getSuccessors(state, player)) {
-                // ... yield turn, add depth, use updated alpha beta, and simulate
-                max = Math.max(max, minimax(succ, opp, depth + 1, alpha, beta));
+            for (int i : PSEUDOMOVES) {
+                // make all possible moves, and for each resulting game state ...
+                if (simGame.isValidMove(i)) {
+                    simGame.makeMove(player, i);
 
-                // alpha-beta exploits assumptions of perfect play and
-                // prunes entire subtrees that we know cannot affect
-                // final output, providing a huge speed-up
-                if (max >= beta) return max;
+                    // ... yield turn, add depth, use updated alpha beta, and simulate
+                    max = Math.max(max, minimax(opp, depth + 1, alpha, beta));
 
-                // update alpha for next successor
-                alpha = Math.max(alpha, max);
+                    simGame.unmakeMove(i);
+
+                    // alpha-beta exploits assumptions of perfect play and
+                    // prunes entire subtrees that we know cannot affect
+                    // final output, providing a huge speed-up
+                    if (max >= beta) return max;
+
+                    // update alpha for next successor
+                    alpha = Math.max(alpha, max);
+                }
             }
 
             return max;
@@ -107,10 +118,15 @@ public class Bot {
         // if OPP's playing, minimize
         long min = MY_INF;
 
-        for (Game succ : getSuccessors(state, opp)) {
-            min = Math.min(min, minimax(succ, player, depth + 1, alpha, beta));
-            if (min <= alpha) return min;
-            beta = Math.min(beta, min);
+        for (int i : PSEUDOMOVES) {
+            if (simGame.isValidMove(i)) {
+                simGame.makeMove(opp, i);
+                min = Math.min(min, minimax(player, depth + 1, alpha, beta));
+                simGame.unmakeMove(i);
+
+                if (min <= alpha) return min;
+                beta = Math.min(beta, min);
+            }
         }
 
         return min;
@@ -121,7 +137,7 @@ public class Bot {
         List<Game> succs = new ArrayList<>();
 
         // check each column
-        for (int i = 0; i < 7; i++) {
+        for (int i : PSEUDOMOVES) {
             if (state.isValidMove(i)) {
                 // make copy of game state
                 Game succ = state.deepCopy();
@@ -135,12 +151,12 @@ public class Bot {
         return succs;
     }
 
-    private long calculateHeuristic(Game state) {
+    private long calculateHeuristic() {
         long score = 0;
 
         // for each game line, we find features that bot's
         // pieces have and features that opp's pieces have
-        for (String line : state.getLines()) {
+        for (String line : simGame.getLines()) {
             String myLine = line
                 .replaceAll(player.name(), "A")
                 .replaceAll(opp.name(), "B");
