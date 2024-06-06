@@ -15,16 +15,23 @@ public class Bot extends Agent {
 
     private static final int[] PSEUDOMOVES = {3, 2, 4, 1, 5, 0, 6};
 
+    private static final Pattern THREE_DOUBLE = Pattern.compile("_AAA_");
+    private static final Pattern THREE = Pattern.compile("_AAA(B|$)|(B|^)AAA_");
+    private static final Pattern THREE_SPACED = Pattern.compile("A_AA|AA_A");
+    private static final Pattern TWO_DOUBLE = Pattern.compile("_AA_");
+    private static final Pattern TWO_GOOD = Pattern.compile("___AA(B|$)|(B|^)AA___");
+    private static final Pattern TWO_MID = Pattern.compile("(B|^)__AA(B|$)|(B|^)AA__(B|$)");
+
     // map of board feature regexes to their weights
     // (ex. 3-in-a-row w/ adjacent spaces has weight 1_000_000)
-    private static final Map<Pattern, Integer> FEATURE_WEIGHTS = Map.of(
-        Pattern.compile("_AAA_"), 1_000_000,
-        Pattern.compile("_AAA(B|$)|(B|^)AAA_"), 300_000,
-        Pattern.compile("A_AA|AA_A"), 300_000,
-        Pattern.compile("_AA_"), 50_000,
-        Pattern.compile("___AA(B|$)|(B|^)AA___"), 20_000,
-        Pattern.compile("(B|^)__AA(B|$)|(B|^)AA__(B|$)"), 10_000
-    );
+    private final Map<Pattern, Integer> featureWeights = new HashMap<>(Map.of(
+        THREE_DOUBLE, 1_000_000,
+        THREE, 300_000,
+        THREE_SPACED, 300_000,
+        TWO_DOUBLE, 50_000,
+        TWO_GOOD, 20_000,
+        TWO_MID, 10_000
+    ));
 
     // the actual game, contrasting with simulations the bot runs
     private final Board realBoard;
@@ -33,21 +40,63 @@ public class Bot extends Agent {
     private final Token opp;
 
     // depth at which we cut off game tree search
-    private final int maxDepth;
+    private int searchDepth;
 
-    public Bot(Token token, Board board, int lookaheadDepth) {
+    private double randomMovePossibility = 0;
+    private double shallowMovePossibility = 0;
+
+    public Bot(Token token, Board board, int level) {
         super(token);
         realBoard = board;
 
         if (token == Token.X) opp = Token.O;
         else opp = Token.X;
 
-        maxDepth = lookaheadDepth;
+        switch (level) {
+            case 0 -> {
+                searchDepth = 4;
+                randomMovePossibility = 0.2;
+                shallowMovePossibility = 0.5;
+                featureWeights.remove(THREE_SPACED);
+                featureWeights.remove(TWO_DOUBLE);
+                featureWeights.remove(TWO_GOOD);
+                featureWeights.remove(TWO_MID);
+            }
+
+            case 1 -> {
+                searchDepth = 4;
+                randomMovePossibility = 0.1;
+                shallowMovePossibility = 0.3;
+                featureWeights.remove(THREE_SPACED);
+                featureWeights.remove(TWO_GOOD);
+                featureWeights.remove(TWO_MID);
+            }
+
+            case 2 -> {
+                searchDepth = 4;
+                shallowMovePossibility = 0.3;
+                featureWeights.remove(TWO_GOOD);
+                featureWeights.remove(TWO_MID);
+            }
+
+            default -> searchDepth = 7;
+        }
     }
 
-    // driver method that invokes minimax
+    // driver method that invokes minimax (or random move)
     @Override
     public int getMove() {
+        if (realBoard.moves > 5 && Math.random() < randomMovePossibility) {
+            return getRandomMove();
+        }
+
+        int originalDepth = -1;
+
+        if (realBoard.moves > 2 && Math.random() < shallowMovePossibility) {
+            originalDepth = searchDepth;
+            searchDepth = 2;
+        }
+
         long max = -MY_INF;
         int move = -1;
 
@@ -71,7 +120,23 @@ public class Bot extends Agent {
             }
         }
 
+        if (originalDepth != -1) {
+            searchDepth = originalDepth;
+        }
+
         return move;
+    }
+
+    private int getRandomMove() {
+        List<Integer> possibleMoves = new ArrayList<>();
+
+        for (int i = 0; i < 7; i++) {
+            if (realBoard.isValidMove(i)) {
+                possibleMoves.add(i);
+            }
+        }
+
+        return possibleMoves.get((int) (Math.random() * possibleMoves.size()));
     }
 
     private long minimax(Token currPlayer, int depth, long alpha, long beta) {
@@ -84,7 +149,7 @@ public class Bot extends Agent {
 
         // nodes reaching cutoff need not be explored
         // further; just calculate board heuristic
-        if (depth == maxDepth) {
+        if (depth == searchDepth) {
             return calculateHeuristic();
         }
 
@@ -149,8 +214,8 @@ public class Bot extends Agent {
             // get weighted sum of bot's features, get same
             // for opp, subtract latter from former (to
             // simulate adversarial nature of Connect 4)
-            for (Pattern feature : FEATURE_WEIGHTS.keySet()) {
-                int weight = FEATURE_WEIGHTS.get(feature);
+            for (Pattern feature : featureWeights.keySet()) {
+                int weight = featureWeights.get(feature);
 
                 score += weight * feature.matcher(myLine).results().count();
                 score -= weight * feature.matcher(oppLine).results().count();

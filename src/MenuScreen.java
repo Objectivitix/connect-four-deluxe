@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class MenuScreen extends Screen implements ActionListener {
+    JPanel body, center;
     JButton local, withBot;
 
     public MenuScreen() {
@@ -27,7 +28,7 @@ public class MenuScreen extends Screen implements ActionListener {
         title.setHorizontalAlignment(JLabel.CENTER);
         header.add(title);
 
-        JPanel body = new JPanel();
+        body = new JPanel();
         body.setLayout(new BorderLayout());
         add(body, BorderLayout.CENTER);
 
@@ -52,7 +53,7 @@ public class MenuScreen extends Screen implements ActionListener {
         body.add(bottom, BorderLayout.SOUTH);
 
         // create grid layout where we will place menu
-        JPanel center = new JPanel();
+        center = new JPanel();
         center.setLayout(new GridLayout(1, 4, 35, 0));
         body.add(center, BorderLayout.CENTER);
 
@@ -76,13 +77,23 @@ public class MenuScreen extends Screen implements ActionListener {
 
             replaceWith(new GameScreen(game));
         } else if (e.getSource() == withBot) {
-            // initialize game and bot
-            Board board = new Board();
-            Agent one = new Player(Token.X, board);
-            Agent two = new Bot(Token.O, board, 7);
-            Game game = new Game(one, two, board);
+            body.remove(center);
+            BotMenu menu = new BotMenu();
+            body.add(menu, BorderLayout.CENTER);
+            for (int i = 0; i < menu.levelBtns.length; i++) {
+                int closureI = i;
+                menu.levelBtns[i].addActionListener(evt -> {
+                    Board board = new Board();
+                    Agent one = new Player(Token.X, board);
+                    Agent two = new Bot(Token.O, board, closureI);
+                    Game game = new Game(one, two, board);
 
-            replaceWith(new GameScreen(game));
+                    replaceWith(new GameScreen(game));
+                });
+            }
+
+            revalidate();
+            repaint();
         }
     }
 }

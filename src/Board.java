@@ -12,6 +12,8 @@ public class Board {
     // stores "where we're at" for each column
     private final int[] firstEmptyIndices;
 
+    public int moves = 0;
+
     public Board() {
         board = new Token[LENGTH][WIDTH];
         firstEmptyIndices = new int[LENGTH];
@@ -56,12 +58,14 @@ public class Board {
         // use the first empty index to "drop" a new token
         board[i][firstEmptyIndices[i]] = token;
         firstEmptyIndices[i]++;
+        moves++;
     }
 
     // used by bot minimax to generate new successor state
     public void unmakeMove(int i) {
         firstEmptyIndices[i]--;
         board[i][firstEmptyIndices[i]] = null;
+        moves--;
     }
 
     public boolean isTie() {
