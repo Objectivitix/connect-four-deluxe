@@ -33,6 +33,16 @@ public class Board {
         this.firstEmptyIndices = Arrays.copyOf(firstEmptyIndices, LENGTH);
     }
 
+    public void reset() {
+        for (int i = 0; i < LENGTH; i++) {
+            for (int j = 0; j < WIDTH; j++) {
+                board[i][j] = null;
+            }
+
+            firstEmptyIndices[i] = 0;
+        }
+    }
+
     public Board deepCopy() {
         return new Board(board, firstEmptyIndices);
     }

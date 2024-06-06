@@ -1,4 +1,4 @@
-public class Game {
+public class Game implements Runnable {
     private final Agent one;
     private final Agent two;
 
@@ -15,6 +15,12 @@ public class Game {
         this.board = board;
     }
 
+    public void reset() {
+        currAgent = one;
+        winner = null;
+        board.reset();
+    }
+
     public void playTurn() {
         board.makeMove(currAgent.token, currAgent.getMove());
 
@@ -27,7 +33,8 @@ public class Game {
         System.out.println();
     }
 
-    public void play() {
+    @Override
+    public void run() {
         // display initial empty board
         board.printBoard();
         System.out.println();

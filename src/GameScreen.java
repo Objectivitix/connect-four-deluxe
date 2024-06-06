@@ -3,16 +3,18 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class GameScreen extends JPanel implements ActionListener {
+public class GameScreen extends Screen implements ActionListener {
     Game game;
     JLabel status;
+    JButton playAgain, mainMenu;
 
     public GameScreen(Game game) {
         super();
-        setPreferredSize(new Dimension(1200, 800));
         setLayout(null);
 
         this.game = game;
+
+        (new Thread(game)).start();
 
         BoardPane boardPane = new BoardPane(game);
         boardPane.setLocation(100, 20);
@@ -28,16 +30,36 @@ public class GameScreen extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        boolean terminal = false;
+
         if (game.winner == Token.X) {
             status.setText("Red wins!");
+            terminal = true;
         } else if (game.winner == Token.O) {
             status.setText("Yellow wins!");
+            terminal = true;
         } else if (game.board.isTie()) {
             status.setText("Wow, it's a tie!");
+            terminal = true;
         } else if (game.currAgent.token == Token.X) {
             status.setText("Red, your turn");
         } else {
             status.setText("Yellow, your turn");
+        }
+
+        if (terminal) {
+            playAgain = new JButton("Play Again");
+            playAgain.setBounds(850, 300, 250, 100);
+            playAgain.addActionListener(evt -> {
+                game.reset();
+                replaceWith(new GameScreen(game));
+            });
+            add(playAgain);
+
+            mainMenu = new JButton("Main Menu");
+            mainMenu.setBounds(850, 420, 250, 100);
+            mainMenu.addActionListener(evt -> replaceWith(new MenuScreen()));
+            add(mainMenu);
         }
 
         repaint();

@@ -1,16 +1,11 @@
-import java.util.Scanner;
-
 public class Player extends Agent {
     // use Scanner to get a move from human player
     Board board;
-    Scanner console;
     int move;
 
-    public Player(Token token, Board board, Scanner s) {
+    public Player(Token token, Board board) {
         super(token);
         this.board = board;
-
-        console = s;
     }
 
     public void holdOn(int move) {

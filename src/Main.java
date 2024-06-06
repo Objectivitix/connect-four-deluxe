@@ -1,9 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
-import java.util.Scanner;
 
 public class Main extends JFrame {
-    private Main(Game game) {
+    private Main() {
         // set JFrame's title
         super("Connect 4 Deluxe");
 
@@ -16,7 +15,8 @@ public class Main extends JFrame {
         // close program if user closes window
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        add(new GameScreen(game));
+//        add(new GameScreen(game));
+        add(new MenuScreen());
 
         pack();
 
@@ -28,23 +28,6 @@ public class Main extends JFrame {
     }
 
     public static void main(String[] args) {
-        Scanner console = new Scanner(System.in);
-
-        // initialize game and bot
-        Board board = new Board();
-        Agent one = new Player(Token.X, board, console);
-        Agent two = new Player(Token.O, board, console);
-//        Agent two = new Bot(Token.O, board, 7);
-        Game game = new Game(one, two, board);
-
-        new Main(game);
-
-        System.out.println("Welcome to Connect 4!");
-        System.out.println("X goes first.");
-        System.out.println();
-
-        game.play();
-
-        console.close();
+        new Main();
     }
 }
