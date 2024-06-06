@@ -1,7 +1,9 @@
 public class Game {
     private final Agent one;
     private final Agent two;
+
     public Agent currAgent;
+    public Token winner;
 
     public final Board board;
 
@@ -25,7 +27,7 @@ public class Game {
         System.out.println();
     }
 
-    public Token play() {
+    public void play() {
         // display initial empty board
         board.printBoard();
         System.out.println();
@@ -41,6 +43,6 @@ public class Game {
             else currAgent = one;
         }
 
-        return winner;
+        this.winner = winner;
     }
 }

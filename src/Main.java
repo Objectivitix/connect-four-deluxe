@@ -43,13 +43,7 @@ public class Main extends JFrame {
         System.out.println("X goes first.");
         System.out.println();
 
-        Token winner = game.play();
-
-        if (winner == null) {
-            System.out.println("Wow, it's a tie!");
-        } else {
-            System.out.println(winner + " wins!");
-        }
+        game.play();
 
         console.close();
     }
