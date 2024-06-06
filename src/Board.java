@@ -144,7 +144,7 @@ public class Board {
     }
 
     // rotate the board 90 degrees cc to get true game board
-    private Token[][] getRotatedBoard() {
+    public Token[][] getRotatedBoard() {
         Token[][] rotatedBoard = new Token[WIDTH][LENGTH];
 
         for (int i = 0; i < LENGTH; i++) {

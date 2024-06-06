@@ -1,9 +1,9 @@
 public class Game {
     private final Agent one;
     private final Agent two;
-    private Agent currAgent;
+    public Agent currAgent;
 
-    private final Board board;
+    public final Board board;
 
     public Game(Agent one, Agent two, Board board) {
         this.one = one;
