@@ -9,6 +9,8 @@ public class Client implements Runnable {
     private String address;
     private Game game;
 
+    public Player player;
+
     public Client(String address, Game game) {
         this.address = address;
         this.game = game;
@@ -22,8 +24,9 @@ public class Client implements Runnable {
             in = new BufferedReader(
                     new InputStreamReader(socket.getInputStream()));
 
-            String fromServer;
+            player = (Player) ((Integer.parseInt(in.readLine()) < 2) ? game.one : game.two);
 
+            String fromServer;
             while ((fromServer = in.readLine()) != null) {
                 if (game.currAgent instanceof Player p) {
                     p.holdOn(Integer.parseInt(fromServer));

@@ -1,6 +1,6 @@
 public class Game implements Runnable {
-    private final Agent one;
-    private final Agent two;
+    public final Agent one;
+    public final Agent two;
 
     public Agent currAgent;
     public Token winner;

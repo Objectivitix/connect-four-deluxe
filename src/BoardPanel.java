@@ -80,7 +80,7 @@ public class BoardPanel extends JPanel implements ActionListener {
             if (source == columnButtons[i]) {
                 if (game.board.isValidMove(i) && game.currAgent instanceof Player p) {
                     if (client == null) p.holdOn(i);
-                    else client.sendToServer(i);
+                    else if (client.player == p) client.sendToServer(i);
                 }
 
                 break;

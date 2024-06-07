@@ -26,6 +26,8 @@ public class ClientHandler extends Thread {
     @Override
     public void run() {
         try {
+            out.println(handlers.size());
+
             String inputLine;
 
             while ((inputLine = in.readLine()) != null) {
