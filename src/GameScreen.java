@@ -9,14 +9,19 @@ public class GameScreen extends Screen implements ActionListener {
     JButton playAgain, mainMenu;
 
     public GameScreen(Game game) {
+        this(game, null);
+    }
+
+    public GameScreen(Game game, Client client) {
         super();
         setLayout(null);
 
         this.game = game;
 
         (new Thread(game)).start();
+        (new Thread(client)).start();
 
-        BoardPane boardPane = new BoardPane(game);
+        BoardPane boardPane = new BoardPane(game, client);
         boardPane.setLocation(100, 20);
         add(boardPane);
 

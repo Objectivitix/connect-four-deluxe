@@ -5,7 +5,7 @@ import java.awt.event.ActionListener;
 
 public class MenuScreen extends Screen implements ActionListener {
     JPanel body, center;
-    JButton local, withBot;
+    JButton local, withBot, startServer, joinServer;
 
     public MenuScreen() {
         // initialize with border layout
@@ -64,6 +64,14 @@ public class MenuScreen extends Screen implements ActionListener {
         withBot = new JButton("Play with AI");
         withBot.addActionListener(this);
         center.add(withBot);
+
+        startServer = new JButton("Start a Server");
+        startServer.addActionListener(this);
+        center.add(startServer);
+
+        joinServer = new JButton("Join a Server");
+        joinServer.addActionListener(this);
+        center.add(joinServer);
     }
 
     @Override
@@ -94,6 +102,15 @@ public class MenuScreen extends Screen implements ActionListener {
 
             revalidate();
             repaint();
+        } else if (e.getSource() == startServer) {
+            replaceWith(new ServerScreen());
+        } else if (e.getSource() == joinServer) {
+            Board board = new Board();
+            Agent one = new Player(Token.X, board);
+            Agent two = new Player(Token.O, board);
+            Game game = new Game(one, two, board);
+
+            replaceWith(new GameScreen(game, new Client("localhost", game)));
         }
     }
 }

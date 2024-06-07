@@ -8,8 +8,9 @@ import java.awt.event.MouseEvent;
 public class BoardPanel extends JPanel implements ActionListener {
     private Game game;
     private JButton[] columnButtons;
+    private Client client;
 
-    public BoardPanel(Game game) {
+    public BoardPanel(Game game, Client client) {
         super();
         setPreferredSize(new Dimension(700, 600));
         setLayout(new GridLayout(1, 7));
@@ -17,6 +18,7 @@ public class BoardPanel extends JPanel implements ActionListener {
         setOpaque(true);
 
         this.game = game;
+        this.client = client;
 
         columnButtons = new JButton[7];
 
@@ -77,7 +79,8 @@ public class BoardPanel extends JPanel implements ActionListener {
         for (i = 0; i < 7; i++) {
             if (source == columnButtons[i]) {
                 if (game.board.isValidMove(i) && game.currAgent instanceof Player p) {
-                    p.holdOn(i);
+                    if (client == null) p.holdOn(i);
+                    else client.sendToServer(i);
                 }
 
                 break;
