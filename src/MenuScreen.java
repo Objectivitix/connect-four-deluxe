@@ -105,12 +105,7 @@ public class MenuScreen extends Screen implements ActionListener {
         } else if (e.getSource() == startServer) {
             replaceWith(new ServerScreen());
         } else if (e.getSource() == joinServer) {
-            Board board = new Board();
-            Agent one = new Player(Token.X, board);
-            Agent two = new Player(Token.O, board);
-            Game game = new Game(one, two, board);
-
-            replaceWith(new GameScreen(game, new Client("localhost", game)));
+            replaceWith(new JoinScreen());
         }
     }
 }
