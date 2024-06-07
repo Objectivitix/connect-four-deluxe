@@ -67,7 +67,7 @@ public class BoardPanel extends JPanel implements ActionListener {
             add(column);
         }
 
-        new Timer(100, this).start();
+        new Timer(50, this).start();
     }
 
     @Override

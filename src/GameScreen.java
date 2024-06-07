@@ -30,7 +30,7 @@ public class GameScreen extends Screen implements ActionListener {
         status.setBounds(850, 50, 300, 200);
         add(status);
 
-        new Timer(100, this).start();
+        new Timer(50, this).start();
     }
 
     @Override
