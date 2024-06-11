@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 
 public class GameScreen extends Screen implements ActionListener {
     Game game;
+    Client client;
     JLabel status;
     JButton playAgain, mainMenu;
 
@@ -17,6 +18,7 @@ public class GameScreen extends Screen implements ActionListener {
         setLayout(null);
 
         this.game = game;
+        this.client = client;
 
         (new Thread(game)).start();
         (new Thread(client)).start();
@@ -30,11 +32,17 @@ public class GameScreen extends Screen implements ActionListener {
         status.setBounds(850, 50, 300, 200);
         add(status);
 
-        new Timer(50, this).start();
+        timer = new Timer(50, this);
+        timer.start();
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if (client != null && (client.status == Client.OPPONENT_DISCONNECTED || client.status == Client.SERVER_DISCONNECTED)) {
+            replaceWith(new MenuScreen());
+            return;
+        }
+
         boolean terminal = false;
 
         if (game.winner == Token.X) {

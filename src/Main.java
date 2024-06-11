@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Main extends JFrame {
+    public static JFrame root;
+
     private Main() {
         // set JFrame's title
         super("Connect 4 Deluxe");
@@ -28,6 +30,6 @@ public class Main extends JFrame {
     }
 
     public static void main(String[] args) {
-        new Main();
+        root = new Main();
     }
 }

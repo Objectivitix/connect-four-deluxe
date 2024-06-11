@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class MenuScreen extends Screen implements ActionListener {
     JPanel body, center;
@@ -103,6 +105,13 @@ public class MenuScreen extends Screen implements ActionListener {
             revalidate();
             repaint();
         } else if (e.getSource() == startServer) {
+            Main.root.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    ServerThread.sendToAll("exit -1");
+                }
+            });
+
             replaceWith(new ServerScreen());
         } else if (e.getSource() == joinServer) {
             replaceWith(new JoinScreen());

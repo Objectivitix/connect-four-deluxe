@@ -5,6 +5,8 @@ import java.awt.*;
 // (by setting size at the panel level, null layout positions
 // are much more accurate, as the window header is excluded)
 public class Screen extends JPanel {
+    protected Timer timer;
+
     public Screen() {
         super();
         setPreferredSize(new Dimension(1200, 800));
@@ -14,6 +16,11 @@ public class Screen extends JPanel {
         Container root = getParent();
         root.remove(this);
         root.add(other);
+
+        // stop timer if there is one
+        if (timer != null) {
+            timer.stop();
+        }
 
         // update display
         root.revalidate();

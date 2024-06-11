@@ -33,7 +33,9 @@ public class JoinScreen extends Screen implements ActionListener {
         Agent one = new Player(Token.X, board);
         Agent two = new Player(Token.O, board);
         Game game = new Game(one, two, board);
-
-        replaceWith(new GameScreen(game, new Client(address, game)));
+        Client client = new Client(address, game);
+        if (client.initialize() == 0) {
+            replaceWith(new GameScreen(game, client));
+        }
     }
 }
