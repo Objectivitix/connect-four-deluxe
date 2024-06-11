@@ -3,8 +3,10 @@ import java.net.*;
 
 public class Client implements Runnable {
     public static final int RUNNING = 0;
-    public static final int SERVER_DISCONNECTED = 1;
-    public static final int OPPONENT_DISCONNECTED = 2;
+    public static final int GOOD_TO_PLAY = 1;
+    public static final int SERVER_DISCONNECTED = 10;
+    public static final int OPPONENT_DISCONNECTED = 11;
+    public static final int RESTART = 20;
 
     private Socket socket;
     private BufferedReader in;
@@ -34,18 +36,22 @@ public class Client implements Runnable {
 
             player = (Player) (id == 0 ? game.one : game.two);
 
-            return 0;
+            return id;
         }
 
         catch (UnknownHostException e) {
             dispose();
-            return 1;
+            return -1;
         }
 
         catch (IOException e) {
             dispose();
-            return 2;
+            return -2;
         }
+    }
+
+    public void setStatusToRunning() {
+        status = RUNNING;
     }
 
     @Override
@@ -55,6 +61,9 @@ public class Client implements Runnable {
             String fromServer;
             while ((fromServer = in.readLine()) != null) {
                 switch (Protocol.getType(fromServer)) {
+                    case "restart" -> status = RESTART;
+                    case "join" -> status = GOOD_TO_PLAY;
+
                     case "move" -> {
                         if (game.currAgent instanceof Player p) {
                             p.holdOn(Protocol.parse(fromServer));
@@ -86,6 +95,10 @@ public class Client implements Runnable {
 
     public void sendToServer(int move) {
         out.println(Protocol.move(move));
+    }
+
+    public void sendRestart() {
+        out.println("restart");
     }
 
     public void disconnect() {

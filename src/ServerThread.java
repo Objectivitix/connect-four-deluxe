@@ -33,7 +33,7 @@ public class ServerThread extends Thread {
             String inputLine;
             while ((inputLine = in.readLine()) != null) {
                 switch (Protocol.getType(inputLine)) {
-                    case "move" -> sendToAll(inputLine);
+                    case "restart", "move" -> sendToAll(inputLine);
                     case "exit" -> {
                         if (Protocol.parse(inputLine) == id) dispose();
                     }

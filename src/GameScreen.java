@@ -6,22 +6,23 @@ import java.awt.event.ActionListener;
 public class GameScreen extends Screen implements ActionListener {
     Game game;
     Client client;
+    boolean control;
     JLabel status;
     JButton playAgain, mainMenu;
 
     public GameScreen(Game game) {
-        this(game, null);
+        this(game, null, false);
     }
 
-    public GameScreen(Game game, Client client) {
+    public GameScreen(Game game, Client client, boolean control) {
         super();
         setLayout(null);
 
         this.game = game;
         this.client = client;
+        this.control = control;
 
         (new Thread(game)).start();
-        (new Thread(client)).start();
 
         BoardPane boardPane = new BoardPane(game, client);
         boardPane.setLocation(100, 20);
@@ -43,6 +44,12 @@ public class GameScreen extends Screen implements ActionListener {
             return;
         }
 
+        if (client != null && client.status == Client.RESTART) {
+            game.reset();
+            client.setStatusToRunning();
+            replaceWith(new GameScreen(game, client, control));
+        }
+
         boolean terminal = false;
 
         if (game.winner == Token.X) {
@@ -61,13 +68,22 @@ public class GameScreen extends Screen implements ActionListener {
         }
 
         if (terminal) {
-            playAgain = new JButton("Play Again");
-            playAgain.setBounds(850, 300, 250, 100);
-            playAgain.addActionListener(evt -> {
-                game.reset();
-                replaceWith(new GameScreen(game));
-            });
-            add(playAgain);
+            if (client == null) {
+                playAgain = new JButton("Play Again");
+                playAgain.setBounds(850, 300, 250, 100);
+                playAgain.addActionListener(evt -> {
+                    game.reset();
+                    replaceWith(new GameScreen(game));
+                });
+                add(playAgain);
+            } else {
+                if (control) {
+                    playAgain = new JButton("Play Again");
+                    playAgain.setBounds(850, 300, 250, 100);
+                    playAgain.addActionListener(evt -> client.sendRestart());
+                    add(playAgain);
+                }
+            }
 
             mainMenu = new JButton("Main Menu");
             mainMenu.setBounds(850, 420, 250, 100);
