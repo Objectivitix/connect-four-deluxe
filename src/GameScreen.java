@@ -71,7 +71,10 @@ public class GameScreen extends Screen implements ActionListener {
 
             mainMenu = new JButton("Main Menu");
             mainMenu.setBounds(850, 420, 250, 100);
-            mainMenu.addActionListener(evt -> replaceWith(new MenuScreen()));
+            mainMenu.addActionListener(evt -> {
+                replaceWith(new MenuScreen());
+                if (client != null) client.disconnect();
+            });
             add(mainMenu);
         }
 

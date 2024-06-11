@@ -31,17 +31,18 @@ public class ServerThread extends Thread {
             sendToAll(Protocol.join(id));
 
             String inputLine;
-
             while ((inputLine = in.readLine()) != null) {
-                if (Protocol.getType(inputLine).equals("move")) {
-                    sendToAll(inputLine);
+                switch (Protocol.getType(inputLine)) {
+                    case "move" -> sendToAll(inputLine);
+                    case "exit" -> {
+                        if (Protocol.parse(inputLine) == id) dispose();
+                    }
                 }
             }
-
-            dispose();
         }
 
-        catch (IOException e) {
+        catch (IOException ignored) {}
+        finally {
             dispose();
         }
     }

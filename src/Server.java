@@ -18,13 +18,11 @@ public class Server implements Runnable {
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             while (!serverSocket.isClosed()) {
                 if (ServerThread.threads.size() < 2) {
-                    (new Thread(new ServerThread(serverSocket.accept()))).start();
+                    new ServerThread(serverSocket.accept()).start();
                 }
             }
         } catch (IOException e) {
             System.err.println("Could not listen on port " + PORT);
-        } finally {
-            ServerThread.sendToAll("exit -1");
         }
     }
 }

@@ -23,7 +23,7 @@ public class Client implements Runnable {
         socket = new Socket();
     }
 
-    public int initialize() {
+    public int connect() {
         try {
             socket.connect(new InetSocketAddress(address, Server.PORT), 10_000);
             out = new PrintWriter(socket.getOutputStream(), true);
@@ -86,6 +86,10 @@ public class Client implements Runnable {
 
     public void sendToServer(int move) {
         out.println(Protocol.move(move));
+    }
+
+    public void disconnect() {
+        out.println(Protocol.exit(id));
     }
 
     public void dispose() {
