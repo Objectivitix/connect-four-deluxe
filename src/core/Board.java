@@ -16,6 +16,9 @@ public class Board {
 
     public int moves = 0;
 
+    public int recentI = -1;
+    public int recentJ = -1;
+
     public Board() {
         board = new Token[LENGTH][WIDTH];
         firstEmptyIndices = new int[LENGTH];
@@ -52,11 +55,14 @@ public class Board {
     }
 
     public boolean isValidMove(int i) {
-        // the column is full when this index > WIDTH
+        // the column is full when this index == WIDTH
         return firstEmptyIndices[i] < WIDTH;
     }
 
     public void makeMove(Token token, int i) {
+        recentI = i;
+        recentJ = firstEmptyIndices[i];
+
         // use the first empty index to "drop" a new token
         board[i][firstEmptyIndices[i]] = token;
         firstEmptyIndices[i]++;

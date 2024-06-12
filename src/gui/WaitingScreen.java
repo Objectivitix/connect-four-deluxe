@@ -15,7 +15,7 @@ public class WaitingScreen extends Screen implements ActionListener {
         this.game = game;
         this.client = client;
 
-        timer = new Timer(50, this);
+        timer = new Timer(UPDATE_PERIOD, this);
         timer.start();
     }
 

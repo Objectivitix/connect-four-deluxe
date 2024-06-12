@@ -30,16 +30,20 @@ public class GameScreen extends Screen implements ActionListener {
 
         (new Thread(game)).start();
 
-        BoardPane boardPane = new BoardPane(game, client);
-        boardPane.setLocation(100, 20);
-        add(boardPane);
+//        BoardPane boardPane = new BoardPane(game, client);
+//        boardPane.setLocation(100, 20);
+//        add(boardPane);
+
+        BoardPanel boardPanel = new BoardPanel(game, client);
+        boardPanel.setLocation(100, 120);
+        add(boardPanel);
 
         status = new JLabel("Red, your turn");
         status.setFont(new Font("Rasa", Font.BOLD, 30));
         status.setBounds(850, 50, 300, 200);
         add(status);
 
-        timer = new Timer(50, this);
+        timer = new Timer(UPDATE_PERIOD, this);
         timer.start();
     }
 

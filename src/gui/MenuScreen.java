@@ -2,6 +2,7 @@ package gui;
 
 import core.*;
 import net.ServerThread;
+import utils.Utils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,6 +14,7 @@ import java.awt.event.WindowEvent;
 public class MenuScreen extends Screen implements ActionListener {
     JPanel body, center;
     JButton local, withBot, startServer, joinServer;
+    BotMenu menu;
 
     public MenuScreen() {
         // initialize with border layout
@@ -46,12 +48,12 @@ public class MenuScreen extends Screen implements ActionListener {
 
         // take up space to the left to constrain center
         JPanel left = new JPanel();
-        left.setPreferredSize(new Dimension(200, 200));
+        left.setPreferredSize(new Dimension(150, 150));
         body.add(left, BorderLayout.WEST);
 
         // take up space to the right to constrain center
         JPanel right = new JPanel();
-        right.setPreferredSize(new Dimension(200, 200));
+        right.setPreferredSize(new Dimension(150, 150));
         body.add(right, BorderLayout.EAST);
 
         // take up space at the bottom to constrain center
@@ -64,21 +66,32 @@ public class MenuScreen extends Screen implements ActionListener {
         center.setLayout(new GridLayout(1, 4, 35, 0));
         body.add(center, BorderLayout.CENTER);
 
-        local = new JButton("Play locally");
-        local.addActionListener(this);
-        center.add(local);
+        JButton[] buttons = new JButton[4];
 
-        withBot = new JButton("Play with AI");
-        withBot.addActionListener(this);
-        center.add(withBot);
+        buttons[0] = local = new JButton("Play Locally");
+        local.setIcon(Utils.icon("local.png", 100, 100));
 
-        startServer = new JButton("Start a Server");
-        startServer.addActionListener(this);
-        center.add(startServer);
+        buttons[1] = withBot = new JButton("Play with AI");
+        withBot.setIcon(Utils.icon("bot.png", 100, 100));
 
-        joinServer = new JButton("Join a Server");
-        joinServer.addActionListener(this);
-        center.add(joinServer);
+        buttons[2] = startServer = new JButton("Start Server");
+        startServer.setIcon(Utils.icon("server.png", 100, 100));
+
+        buttons[3] = joinServer = new JButton("Join Server");
+        joinServer.setIcon(Utils.icon("join.png", 100, 100));
+
+        for (JButton button : buttons) {
+            button.setText("<html><div style='text-align: center;'>"
+                + button.getText() + "</div></html>");
+            button.setFont(new Font("", Font.PLAIN, 24));
+            button.setHorizontalTextPosition(JButton.CENTER);
+            button.setVerticalTextPosition(JButton.TOP);
+            button.setIconTextGap(30);
+            button.addActionListener(this);
+            center.add(button);
+        }
+
+        menu = new BotMenu();
     }
 
     @Override
@@ -87,7 +100,6 @@ public class MenuScreen extends Screen implements ActionListener {
             replaceWith(new GameScreen(Game.newGame()));
         } else if (e.getSource() == withBot) {
             body.remove(center);
-            BotMenu menu = new BotMenu();
             body.add(menu, BorderLayout.CENTER);
             for (int i = 0; i < menu.levelBtns.length; i++) {
                 int closureI = i;

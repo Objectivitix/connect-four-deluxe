@@ -19,7 +19,8 @@ public class BoardPanel extends JPanel implements ActionListener {
 
     public BoardPanel(Game game, Client client) {
         super();
-        setPreferredSize(new Dimension(700, 600));
+//        setPreferredSize(new Dimension(700, 600));
+        setSize(700, 600);
         setLayout(new GridLayout(1, 7));
         setBackground(Color.BLUE);
         setOpaque(true);
@@ -48,6 +49,12 @@ public class BoardPanel extends JPanel implements ActionListener {
                             : Color.WHITE);
 
                         g2D.fillOval(10, j * 95 + 22, 80, 80);
+
+                        if (5 - j == game.board.recentJ && closureI == game.board.recentI) {
+                            g2D.setStroke(new BasicStroke(7));
+                            g2D.setPaint(new Color(0, 230, 0));
+                            g2D.drawOval(10, j * 95 + 22, 80, 80);
+                        }
                     }
                 }
             };
@@ -61,7 +68,7 @@ public class BoardPanel extends JPanel implements ActionListener {
             column.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseEntered(MouseEvent e) {
-                    column.setBackground(Color.GREEN);
+                    column.setBackground(new Color(0, 230, 0));
                 }
 
                 @Override
@@ -74,7 +81,7 @@ public class BoardPanel extends JPanel implements ActionListener {
             add(column);
         }
 
-        new Timer(50, this).start();
+        new Timer(Screen.UPDATE_PERIOD, this).start();
     }
 
     @Override
@@ -94,6 +101,6 @@ public class BoardPanel extends JPanel implements ActionListener {
             }
         }
 
-        repaint();
+//        repaint();
     }
 }

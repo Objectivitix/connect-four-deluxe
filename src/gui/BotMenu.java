@@ -1,5 +1,7 @@
 package gui;
 
+import utils.Utils;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -17,8 +19,20 @@ public class BotMenu extends JPanel {
             new JButton("The High One")
         };
 
-        for (JButton btn : levelBtns) {
-            add(btn);
+        levelBtns[0].setIcon(Utils.icon("bob.png", 160, 120));
+        levelBtns[1].setIcon(Utils.icon("clarke.png", 160, 120));
+        levelBtns[2].setIcon(Utils.icon("athena.png", 160, 120));
+        levelBtns[3].setIcon(Utils.icon("high-one.png", 180, 135));
+
+        for (JButton button : levelBtns) {
+            button.setText("<html><div style='text-align: center;'>"
+                + button.getText() + "</div></html>");
+            button.setFont(new Font("", Font.PLAIN, 24));
+            button.setHorizontalTextPosition(JButton.CENTER);
+            button.setVerticalTextPosition(JButton.TOP);
+            button.setIconTextGap(button.getText().contains("High") ? 15 : 30);
+
+            add(button);
         }
     }
 }

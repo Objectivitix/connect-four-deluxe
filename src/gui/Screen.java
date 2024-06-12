@@ -7,6 +7,12 @@ import java.awt.*;
 // (by setting size at the panel level, null layout positions
 // are much more accurate, as the window header is excluded)
 public class Screen extends JPanel {
+    private static final int UPDATE_RATE = 30;
+    public static final int UPDATE_PERIOD = 1_000 / UPDATE_RATE;
+
+    private static final int FRAME_RATE = 144;
+    public static final int FRAME_PERIOD = 1_000 / FRAME_RATE;
+
     protected Timer timer;
 
     public Screen() {
