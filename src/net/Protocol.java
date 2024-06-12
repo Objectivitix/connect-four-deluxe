@@ -1,3 +1,5 @@
+package net;
+
 public class Protocol {
     public static final int SERVER_ID = -1;
 

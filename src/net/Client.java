@@ -1,3 +1,8 @@
+package net;
+
+import core.Game;
+import core.Player;
+
 import java.io.*;
 import java.net.*;
 
@@ -63,12 +68,7 @@ public class Client implements Runnable {
                 switch (Protocol.getType(fromServer)) {
                     case "restart" -> status = RESTART;
                     case "join" -> status = GOOD_TO_PLAY;
-
-                    case "move" -> {
-                        if (game.currAgent instanceof Player p) {
-                            p.holdOn(Protocol.parse(fromServer));
-                        }
-                    }
+                    case "move" -> ((Player) game.currAgent).holdOn(Protocol.parse(fromServer));
 
                     case "exit" -> {
                         int exitedId = Protocol.parse(fromServer);

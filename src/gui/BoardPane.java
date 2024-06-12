@@ -1,3 +1,8 @@
+package gui;
+
+import core.Game;
+import net.Client;
+
 import javax.swing.*;
 import java.awt.*;
 

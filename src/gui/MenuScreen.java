@@ -1,3 +1,8 @@
+package gui;
+
+import core.*;
+import net.ServerThread;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -79,13 +84,7 @@ public class MenuScreen extends Screen implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == local) {
-            // initialize game and bot
-            Board board = new Board();
-            Agent one = new Player(Token.X, board);
-            Agent two = new Player(Token.O, board);
-            Game game = new Game(one, two, board);
-
-            replaceWith(new GameScreen(game));
+            replaceWith(new GameScreen(Game.newGame()));
         } else if (e.getSource() == withBot) {
             body.remove(center);
             BotMenu menu = new BotMenu();
@@ -93,19 +92,14 @@ public class MenuScreen extends Screen implements ActionListener {
             for (int i = 0; i < menu.levelBtns.length; i++) {
                 int closureI = i;
                 menu.levelBtns[i].addActionListener(evt -> {
-                    Board board = new Board();
-                    Agent one = new Player(Token.X, board);
-                    Agent two = new Bot(Token.O, board, closureI);
-                    Game game = new Game(one, two, board);
-
-                    replaceWith(new GameScreen(game));
+                    replaceWith(new GameScreen(Game.newGame(closureI)));
                 });
             }
 
             revalidate();
             repaint();
         } else if (e.getSource() == startServer) {
-            Main.root.addWindowListener(new WindowAdapter() {
+            App.root.addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent e) {
                     ServerThread.sendToAll("exit -1");

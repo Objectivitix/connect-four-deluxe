@@ -1,3 +1,5 @@
+package core;
+
 public class Player extends Agent {
     // use Scanner to get a move from human player
     Board board;

@@ -1,3 +1,8 @@
+package gui;
+
+import core.*;
+import net.Client;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -29,10 +34,7 @@ public class JoinScreen extends Screen implements ActionListener {
             address = "localhost";
         }
 
-        Board board = new Board();
-        Agent one = new Player(Token.X, board);
-        Agent two = new Player(Token.O, board);
-        Game game = new Game(one, two, board);
+        Game game = Game.newGame();
 
         Client client = new Client(address, game);
         int result = client.connect();

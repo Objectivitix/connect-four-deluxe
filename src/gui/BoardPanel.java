@@ -1,3 +1,10 @@
+package gui;
+
+import core.Game;
+import core.Player;
+import core.Token;
+import net.Client;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;

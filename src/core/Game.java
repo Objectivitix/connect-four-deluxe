@@ -1,3 +1,5 @@
+package core;
+
 public class Game implements Runnable {
     public final Agent one;
     public final Agent two;
@@ -7,12 +9,25 @@ public class Game implements Runnable {
 
     public final Board board;
 
-    public Game(Agent one, Agent two, Board board) {
+    private Game(Agent one, Agent two, Board board) {
         this.one = one;
         this.two = two;
         currAgent = one;
 
         this.board = board;
+    }
+
+    public static Game newGame() {
+        return newGame(-1);
+    }
+
+    public static Game newGame(int botLevel) {
+        Board board = new Board();
+        Agent one = new Player(Token.X, board);
+        Agent two = (botLevel == -1) ?
+            new Player(Token.O, board) : new Bot(Token.O, board, botLevel);
+
+        return new Game(one, two, board);
     }
 
     public void reset() {

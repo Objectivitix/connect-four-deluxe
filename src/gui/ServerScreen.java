@@ -1,3 +1,7 @@
+package gui;
+
+import net.Server;
+
 import javax.swing.*;
 import java.awt.*;
 import java.net.UnknownHostException;
