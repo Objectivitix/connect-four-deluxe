@@ -29,8 +29,8 @@ public class ServerScreen extends Screen {
         address.setHorizontalAlignment(SwingConstants.CENTER);
         add(address);
 
-        JLabel outro = new JLabel("<html><div style='text-align: center'>Terminate this program to kill the server.<br>" +
-            "Another window has opened; use it to join.\n</div></html>");
+        JLabel outro = new JLabel("<html><div style='text-align: center'>Closing this window kills the server.<br>" +
+            "Run another instance of this program to join.</div></html>");
         outro.setFont(new Font("Rasa", Font.PLAIN, 30));
         outro.setHorizontalAlignment(SwingConstants.CENTER);
         outro.setVerticalAlignment(SwingConstants.TOP);

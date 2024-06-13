@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class App extends JFrame {
-    public App(boolean center) {
+    public App() {
         // set JFrame's title
         super("Connect 4 Deluxe");
 
@@ -22,10 +22,8 @@ public class App extends JFrame {
 
         pack();
 
-        if (center) {
-            // center window with respect to viewport
-            setLocationRelativeTo(null);
-        }
+        // center window with respect to viewport
+        setLocationRelativeTo(null);
 
         // make everything visible
         setVisible(true);

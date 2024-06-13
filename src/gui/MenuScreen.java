@@ -119,7 +119,6 @@ public class MenuScreen extends Screen implements ActionListener {
             });
 
             replaceWith(new ServerScreen());
-            new App(false);
         } else if (e.getSource() == joinServer) {
             replaceWith(new JoinScreen());
         }

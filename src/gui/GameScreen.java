@@ -49,8 +49,13 @@ public class GameScreen extends Screen implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (client != null && (client.status == Client.OPPONENT_DISCONNECTED || client.status == Client.SERVER_DISCONNECTED)) {
-            replaceWith(new MenuScreen());
+        if (client != null && client.status == Client.OPPONENT_DISCONNECTED) {
+            replaceWith(new DisconnectedScreen(false));
+            return;
+        }
+
+        if (client != null && client.status == Client.SERVER_DISCONNECTED) {
+            replaceWith(new DisconnectedScreen(true));
             return;
         }
 
