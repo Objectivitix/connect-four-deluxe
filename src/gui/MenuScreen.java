@@ -111,7 +111,7 @@ public class MenuScreen extends Screen implements ActionListener {
             revalidate();
             repaint();
         } else if (e.getSource() == startServer) {
-            App.root.addWindowListener(new WindowAdapter() {
+            ((JFrame) getRootPane().getParent()).addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent e) {
                     ServerThread.sendToAll("exit -1");
@@ -119,6 +119,7 @@ public class MenuScreen extends Screen implements ActionListener {
             });
 
             replaceWith(new ServerScreen());
+            new App(false);
         } else if (e.getSource() == joinServer) {
             replaceWith(new JoinScreen());
         }

@@ -80,6 +80,7 @@ public class GameScreen extends Screen implements ActionListener {
         if (terminal) {
             if (client == null) {
                 playAgain = new JButton("Play Again");
+                playAgain.setFont(new Font("", Font.PLAIN, 24));
                 playAgain.setBounds(850, 300, 250, 100);
                 playAgain.addActionListener(evt -> {
                     game.reset();
@@ -89,6 +90,7 @@ public class GameScreen extends Screen implements ActionListener {
             } else {
                 if (control) {
                     playAgain = new JButton("Play Again");
+                    playAgain.setFont(new Font("", Font.PLAIN, 24));
                     playAgain.setBounds(850, 300, 250, 100);
                     playAgain.addActionListener(evt -> client.sendRestart());
                     add(playAgain);
@@ -96,6 +98,7 @@ public class GameScreen extends Screen implements ActionListener {
             }
 
             mainMenu = new JButton("Main Menu");
+            mainMenu.setFont(new Font("", Font.PLAIN, 24));
             mainMenu.setBounds(850, 420, 250, 100);
             mainMenu.addActionListener(evt -> {
                 replaceWith(new MenuScreen());

@@ -48,6 +48,9 @@ public class Board {
 
             firstEmptyIndices[i] = 0;
         }
+
+        recentI = -1;
+        recentJ = -1;
     }
 
     public Board deepCopy() {

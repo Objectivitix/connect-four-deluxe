@@ -44,14 +44,9 @@ public class Client implements Runnable {
             return id;
         }
 
-        catch (UnknownHostException e) {
-            dispose();
-            return -1;
-        }
-
         catch (IOException e) {
             dispose();
-            return -2;
+            return -1;
         }
     }
 

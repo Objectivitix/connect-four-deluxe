@@ -12,4 +12,10 @@ public class Utils {
                 .getScaledInstance(width, height, Image.SCALE_SMOOTH)
         );
     }
+
+    public static JPanel spacer(int space) {
+        JPanel spacer = new JPanel();
+        spacer.setPreferredSize(new Dimension(space, space));
+        return spacer;
+    }
 }

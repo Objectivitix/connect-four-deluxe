@@ -51,9 +51,9 @@ public class BoardPanel extends JPanel implements ActionListener {
                         g2D.fillOval(10, j * 95 + 22, 80, 80);
 
                         if (5 - j == game.board.recentJ && closureI == game.board.recentI) {
-                            g2D.setStroke(new BasicStroke(7));
+                            g2D.setStroke(new BasicStroke(10));
                             g2D.setPaint(new Color(0, 230, 0));
-                            g2D.drawOval(10, j * 95 + 22, 80, 80);
+                            g2D.drawOval(12, j * 95 + 24, 76, 76);
                         }
                     }
                 }
