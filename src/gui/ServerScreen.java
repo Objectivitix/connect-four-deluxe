@@ -1,6 +1,7 @@
 package gui;
 
 import net.Server;
+import utils.Utils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,8 +30,8 @@ public class ServerScreen extends Screen {
         address.setHorizontalAlignment(SwingConstants.CENTER);
         add(address);
 
-        JLabel outro = new JLabel("<html><div style='text-align: center'>Closing this window kills the server.<br>" +
-            "Run another instance of this program to join.</div></html>");
+        JLabel outro = new JLabel(Utils.center("Closing this window kills the server.\n" +
+            "Run another instance of this program to join."));
         outro.setFont(new Font("Rasa", Font.PLAIN, 30));
         outro.setHorizontalAlignment(SwingConstants.CENTER);
         outro.setVerticalAlignment(SwingConstants.TOP);

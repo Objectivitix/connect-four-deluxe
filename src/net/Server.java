@@ -19,9 +19,7 @@ public class Server implements Runnable {
     public void run() {
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             while (!serverSocket.isClosed()) {
-                if (ServerThread.threads.size() < 2) {
-                    new ServerThread(serverSocket.accept()).start();
-                }
+                new ServerThread(serverSocket.accept()).start();
             }
         } catch (IOException e) {
             System.err.println("Could not listen on port " + PORT);

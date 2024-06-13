@@ -31,7 +31,7 @@ public class WaitingScreen extends Screen implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (client.status == Client.SERVER_DISCONNECTED) {
-            replaceWith(new DisconnectedScreen(true));
+            replaceWith(new DisconnectedScreen("Uh oh—the server disconnected!"));
             return;
         }
 

@@ -25,8 +25,6 @@ public class BotMenu extends JPanel {
         levelBtns[3].setIcon(Utils.icon("high-one.png", 180, 135));
 
         for (JButton button : levelBtns) {
-            button.setText("<html><div style='text-align: center;'>"
-                + button.getText() + "</div></html>");
             button.setFont(new Font("", Font.PLAIN, 24));
             button.setHorizontalTextPosition(JButton.CENTER);
             button.setVerticalTextPosition(JButton.TOP);

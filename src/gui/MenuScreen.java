@@ -42,28 +42,15 @@ public class MenuScreen extends Screen implements ActionListener {
         add(body, BorderLayout.CENTER);
 
         // take up space for vertical gap between title and buttons
-        JPanel gap = new JPanel();
-        gap.setPreferredSize(new Dimension(50, 50));
-        body.add(gap, BorderLayout.NORTH);
+        body.add(Utils.spacer(50), BorderLayout.NORTH);
 
-        // take up space to the left to constrain center
-        JPanel left = new JPanel();
-        left.setPreferredSize(new Dimension(150, 150));
-        body.add(left, BorderLayout.WEST);
-
-        // take up space to the right to constrain center
-        JPanel right = new JPanel();
-        right.setPreferredSize(new Dimension(150, 150));
-        body.add(right, BorderLayout.EAST);
-
-        // take up space at the bottom to constrain center
-        JPanel bottom = new JPanel();
-        bottom.setPreferredSize(new Dimension(200, 200));
-        body.add(bottom, BorderLayout.SOUTH);
+        // take up space on other 3 sides to constrain center
+        body.add(Utils.spacer(150), BorderLayout.WEST);
+        body.add(Utils.spacer(150), BorderLayout.EAST);
+        body.add(Utils.spacer(200), BorderLayout.SOUTH);
 
         // create grid layout where we will place menu
-        center = new JPanel();
-        center.setLayout(new GridLayout(1, 4, 35, 0));
+        center = new JPanel(new GridLayout(1, 4, 35, 0));
         body.add(center, BorderLayout.CENTER);
 
         JButton[] buttons = new JButton[4];
@@ -81,8 +68,7 @@ public class MenuScreen extends Screen implements ActionListener {
         joinServer.setIcon(Utils.icon("join.png", 100, 100));
 
         for (JButton button : buttons) {
-            button.setText("<html><div style='text-align: center;'>"
-                + button.getText() + "</div></html>");
+            button.setText(Utils.center(button.getText()));
             button.setFont(new Font("", Font.PLAIN, 24));
             button.setHorizontalTextPosition(JButton.CENTER);
             button.setVerticalTextPosition(JButton.TOP);

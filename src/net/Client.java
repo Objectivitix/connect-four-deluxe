@@ -39,7 +39,13 @@ public class Client implements Runnable {
 
             id = Protocol.parse(in.readLine());
 
-            player = (Player) (id == 0 ? game.one : game.two);
+            if (id == 0) {
+                player = (Player) game.one;
+            } else if (id == 1) {
+                player = (Player) game.two;
+            } else {
+                player = null;
+            }
 
             return id;
         }

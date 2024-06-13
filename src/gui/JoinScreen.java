@@ -68,7 +68,7 @@ public class JoinScreen extends Screen implements ActionListener {
         if (result == 0) {
             replaceWith(new WaitingScreen(game, client));
             (new Thread(client)).start();
-        } else if (result == 1) {
+        } else if (result > 0) {
             replaceWith(new GameScreen(game, client, false));
             (new Thread(client)).start();
         } else {

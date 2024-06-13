@@ -68,7 +68,7 @@ public class BoardPanel extends JPanel implements ActionListener {
             column.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseEntered(MouseEvent e) {
-                    column.setBackground(new Color(0, 230, 0));
+                    if (client == null || client.player != null) column.setBackground(new Color(0, 230, 0));
                 }
 
                 @Override
@@ -92,7 +92,7 @@ public class BoardPanel extends JPanel implements ActionListener {
 
         for (i = 0; i < 7; i++) {
             if (source == columnButtons[i]) {
-                if (game.board.isValidMove(i) && game.currAgent instanceof Player p) {
+                if ((client == null || client.player != null) && game.board.isValidMove(i) && game.currAgent instanceof Player p) {
                     if (client == null) p.holdOn(i);
                     else if (client.player == p) client.sendToServer(i);
                 }

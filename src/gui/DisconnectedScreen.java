@@ -6,7 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class DisconnectedScreen extends Screen {
-    public DisconnectedScreen(boolean serverDisconnected) {
+    public DisconnectedScreen(String text) {
         super();
         setLayout(new BorderLayout());
 
@@ -18,7 +18,7 @@ public class DisconnectedScreen extends Screen {
 
         JPanel center = new JPanel(new GridLayout(2, 1, 0, -20));
 
-        JLabel title = new JLabel(serverDisconnected ? "Uh oh—the server disconnected!" : "Uh oh—your opponent disconnected!");
+        JLabel title = new JLabel(text);
         title.setFont(new Font("Rasa", Font.BOLD, 36));
         title.setHorizontalAlignment(SwingConstants.CENTER);
         center.add(title);

@@ -18,4 +18,13 @@ public class Utils {
         spacer.setPreferredSize(new Dimension(space, space));
         return spacer;
     }
+
+    public static String html(String text) {
+        return "<html>" + text.replaceAll("\n", "<br>") + "</html>";
+    }
+
+    public static String center(String text) {
+        return "<html><div style='text-align: center'>"
+            + text.replaceAll("\n", "<br>") + "</html>";
+    }
 }
