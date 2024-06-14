@@ -3,6 +3,7 @@ package gui;
 import core.Game;
 import core.Token;
 import net.Client;
+import utils.Utils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,7 +14,7 @@ public class GameScreen extends Screen implements ActionListener {
     Game game;
     Client client;
     boolean control;
-    JLabel status;
+    JLabel status, spectators;
     JButton playAgain, mainMenu;
 
     public GameScreen(Game game) {
@@ -34,6 +35,23 @@ public class GameScreen extends Screen implements ActionListener {
 //        boardPane.setLocation(100, 20);
 //        add(boardPane);
 
+        if (client != null && client.player == null) {
+            JLabel spectating = new JLabel("SPECTATING");
+            spectating.setFont(new Font("Rasa", Font.BOLD, 48));
+            spectating.setForeground(Color.BLUE);
+            spectating.setBounds(100, 50, 300, 100);
+            add(spectating);
+        }
+
+        if (client != null) {
+            spectators = new JLabel("0");
+            spectators.setIcon(Utils.icon("eye.png", 30, 20));
+            spectators.setIconTextGap(10);
+            spectators.setFont(new Font("", Font.PLAIN, 30));
+            spectators.setBounds(1090, 0, 150, 100);
+            add(spectators);
+        }
+
         BoardPanel boardPanel = new BoardPanel(game, client);
         boardPanel.setLocation(100, 120);
         add(boardPanel);
@@ -49,8 +67,10 @@ public class GameScreen extends Screen implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (client != null && client.status == Client.OPPONENT_DISCONNECTED) {
-            replaceWith(new DisconnectedScreen("Uh oh—your opponent disconnected!"));
+        if (client != null && client.status == Client.PLAYER_DISCONNECTED) {
+            String text = (client.player == null) ?
+                "Uh oh—a player disconnected!" : "Uh oh—your opponent disconnected!";
+            replaceWith(new DisconnectedScreen(text));
             return;
         }
 
@@ -63,6 +83,10 @@ public class GameScreen extends Screen implements ActionListener {
             game.reset();
             client.setStatusToRunning();
             replaceWith(new GameScreen(game, client, control));
+        }
+
+        if (client != null) {
+            spectators.setText(String.valueOf(client.spectators));
         }
 
         boolean terminal = false;

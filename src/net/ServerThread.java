@@ -8,13 +8,15 @@ public class ServerThread extends Thread {
     public static final List<ServerThread> threads = new ArrayList<>();
     public final int id;
 
+    private final Server mother;
     private final Socket socket;
     private BufferedReader in;
     private PrintWriter out;
 
-    public ServerThread(Socket socket) {
+    public ServerThread(Socket socket, Server mother) {
         super("ServerThread@" + threads.size());
         this.socket = socket;
+        this.mother = mother;
 
         try {
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -32,10 +34,20 @@ public class ServerThread extends Thread {
         try {
             sendToAll(Protocol.join(id));
 
+            if (id > 1 && !mother.getMoves().isEmpty()) {
+                out.println(Protocol.moves(mother.getMoves()));
+            }
+
             String inputLine;
             while ((inputLine = in.readLine()) != null) {
                 switch (Protocol.getType(inputLine)) {
-                    case "restart", "move" -> sendToAll(inputLine);
+                    case "restart" -> sendToAll(inputLine);
+
+                    case "move" -> {
+                        mother.addMove(Protocol.parse(inputLine));
+                        sendToAll(inputLine);
+                    }
+
                     case "exit" -> {
                         if (Protocol.parse(inputLine) == id) dispose();
                     }

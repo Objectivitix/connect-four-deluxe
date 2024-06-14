@@ -10,7 +10,7 @@ public class Client implements Runnable {
     public static final int RUNNING = 0;
     public static final int GOOD_TO_PLAY = 1;
     public static final int SERVER_DISCONNECTED = 10;
-    public static final int OPPONENT_DISCONNECTED = 11;
+    public static final int PLAYER_DISCONNECTED = 11;
     public static final int RESTART = 20;
 
     private Socket socket;
@@ -23,6 +23,8 @@ public class Client implements Runnable {
 
     public Player player;
     public int status = -1;
+
+    public int spectators = 0;
 
     public Client(String address, Game game) {
         this.address = address;
@@ -45,6 +47,7 @@ public class Client implements Runnable {
                 player = (Player) game.two;
             } else {
                 player = null;
+                spectators = id - 1;
             }
 
             return id;
@@ -68,27 +71,39 @@ public class Client implements Runnable {
             while ((fromServer = in.readLine()) != null) {
                 switch (Protocol.getType(fromServer)) {
                     case "restart" -> status = RESTART;
-                    case "join" -> status = GOOD_TO_PLAY;
+                    case "join" -> {
+                        status = GOOD_TO_PLAY;
+                        int otherId = Protocol.parse(fromServer);
+                        if (otherId > 1) spectators = otherId - 1;
+                    }
                     case "move" -> ((Player) game.currAgent).holdOn(Protocol.parse(fromServer));
+                    case "moves" -> {
+                        for (int i : Protocol.parseMoves(fromServer)) {
+                            ((Player) game.currAgent).holdOn(i);
+                            Thread.sleep(20);
+                        }
+                    }
 
                     case "exit" -> {
                         int exitedId = Protocol.parse(fromServer);
-                        if (exitedId == -1) {
+                        if (exitedId == Protocol.SERVER_ID) {
                             status = SERVER_DISCONNECTED;
                             dispose();
                             return;
-                        }
-
-                        if (Protocol.parse(fromServer) < 2 && exitedId != id) {
-                            status = OPPONENT_DISCONNECTED;
+                        } else if (exitedId < 2 && exitedId != id) {
+                            status = PLAYER_DISCONNECTED;
                             dispose();
                             return;
+                        } else {
+                            spectators--;
                         }
                     }
                 }
             }
         } catch (IOException e) {
             System.err.println("Error reading from " + address);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         } finally {
             dispose();
         }
