@@ -19,7 +19,6 @@ public class BoardPanel extends JPanel implements ActionListener {
 
     public BoardPanel(Game game, Client client) {
         super();
-//        setPreferredSize(new Dimension(700, 600));
         setSize(700, 600);
         setLayout(new GridLayout(1, 7));
         setBackground(Color.BLUE);
@@ -35,9 +34,7 @@ public class BoardPanel extends JPanel implements ActionListener {
             JButton column = new JButton() {
                 @Override
                 protected void paintComponent(Graphics g) {
-                    if (game.board.isValidMove(closureI)) {
-                        super.paintComponent(g);
-                    }
+                    super.paintComponent(g);
 
                     Graphics2D g2D = (Graphics2D) g;
                     g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -59,6 +56,7 @@ public class BoardPanel extends JPanel implements ActionListener {
                 }
             };
 
+            column.setContentAreaFilled(false);
             column.setBackground(Color.BLUE);
             column.setOpaque(true);
             column.setBorder(null);
@@ -67,8 +65,21 @@ public class BoardPanel extends JPanel implements ActionListener {
 
             column.addMouseListener(new MouseAdapter() {
                 @Override
+                public void mousePressed(MouseEvent e) {
+                    if (game.winner == null && !game.board.isTie() && (client == null || client.player != null) && game.board.isValidMove(closureI)) {
+                        column.setBackground(Color.LIGHT_GRAY);
+                    }
+                }
+
+                @Override
                 public void mouseEntered(MouseEvent e) {
-                    if (client == null || client.player != null) column.setBackground(new Color(0, 230, 0));
+                    if (game.winner == null && !game.board.isTie() && (client == null || client.player != null) && game.board.isValidMove(closureI)) column.setBackground(new Color(0, 230, 0));
+                }
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    if (game.winner == null && !game.board.isTie() && (client == null || client.player != null) && game.board.isValidMove(closureI))
+                        column.setBackground(new Color(0, 230, 0));
                 }
 
                 @Override
@@ -80,8 +91,6 @@ public class BoardPanel extends JPanel implements ActionListener {
             columnButtons[i] = column;
             add(column);
         }
-
-        new Timer(Screen.UPDATE_PERIOD, this).start();
     }
 
     @Override
@@ -92,7 +101,7 @@ public class BoardPanel extends JPanel implements ActionListener {
 
         for (i = 0; i < 7; i++) {
             if (source == columnButtons[i]) {
-                if ((client == null || client.player != null) && game.board.isValidMove(i) && game.currAgent instanceof Player p) {
+                if (game.winner == null && !game.board.isTie() && (client == null || client.player != null) && game.board.isValidMove(i) && game.currAgent instanceof Player p) {
                     if (client == null) p.holdOn(i);
                     else if (client.player == p) client.sendToServer(i);
                 }
@@ -100,7 +109,5 @@ public class BoardPanel extends JPanel implements ActionListener {
                 break;
             }
         }
-
-//        repaint();
     }
 }
