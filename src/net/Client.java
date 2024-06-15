@@ -88,11 +88,9 @@ public class Client implements Runnable {
                         int exitedId = Protocol.parse(fromServer);
                         if (exitedId == Protocol.SERVER_ID) {
                             status = SERVER_DISCONNECTED;
-                            dispose();
                             return;
                         } else if (exitedId < 2 && exitedId != id) {
                             status = PLAYER_DISCONNECTED;
-                            dispose();
                             return;
                         } else {
                             spectators--;

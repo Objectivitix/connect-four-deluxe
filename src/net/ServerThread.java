@@ -56,7 +56,7 @@ public class ServerThread extends Thread {
                     }
 
                     case "exit" -> {
-                        if (Protocol.parse(inputLine) == id) dispose();
+                        if (Protocol.parse(inputLine) == id) return;
                     }
                 }
             }
