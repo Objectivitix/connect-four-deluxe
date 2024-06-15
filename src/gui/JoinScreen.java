@@ -15,8 +15,10 @@ public class JoinScreen extends Screen implements ActionListener {
     JLabel status;
 
     public JoinScreen() {
-        super();
+        super(true);
         setLayout(new BorderLayout());
+
+        addBackToMenuListener(evt -> replaceWith(App.menuScreen));
 
         // take up space on all sides to constrain center
         add(Utils.spacer(250), BorderLayout.NORTH);

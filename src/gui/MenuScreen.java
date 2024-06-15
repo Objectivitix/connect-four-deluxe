@@ -17,6 +17,7 @@ public class MenuScreen extends Screen implements ActionListener {
     JButton local, withBot, startServer, joinServer;
     BotMenu menu;
     JLabel title;
+    ImageIcon welcome;
 
     public MenuScreen() {
         // initialize with border layout
@@ -33,7 +34,8 @@ public class MenuScreen extends Screen implements ActionListener {
         top.add(header, BorderLayout.SOUTH);
 
         // create centered title with cool font
-        title = new JLabel(Utils.icon("welcome.png", 900, 375));
+        welcome = Utils.icon("welcome.png", 900, 375);
+        title = new JLabel(welcome);
         title.setHorizontalAlignment(JLabel.CENTER);
         header.add(title);
 
@@ -93,6 +95,9 @@ public class MenuScreen extends Screen implements ActionListener {
                 int closureI = i;
                 menu.levelBtns[i].addActionListener(evt -> {
                     replaceWith(new GameScreen(Game.newGame(closureI)));
+                    title.setIcon(welcome);
+                    body.remove(menu);
+                    body.add(center, BorderLayout.CENTER);
                 });
             }
 
@@ -100,11 +105,11 @@ public class MenuScreen extends Screen implements ActionListener {
             repaint();
         } else if (e.getSource() == startServer) {
             if (Server.alreadyHasOneRunning()) {
-                Utils.alert(getRootPane().getParent(), "There's already a server running on this machine!");
+                Utils.alert(App.frame, "There's already a server running on this machine!");
                 return;
             }
 
-            ((JFrame) getRootPane().getParent()).addWindowListener(new WindowAdapter() {
+            App.frame.addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent e) {
                     ServerThread.sendToAll("exit -1");

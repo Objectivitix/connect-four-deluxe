@@ -24,7 +24,7 @@ public class GameScreen extends Screen implements ActionListener {
     }
 
     public GameScreen(Game game, Client client, boolean control) {
-        super();
+        super(true);
         setLayout(null);
 
         this.game = game;
@@ -33,9 +33,10 @@ public class GameScreen extends Screen implements ActionListener {
 
         (new Thread(game)).start();
 
-//        BoardPane boardPane = new BoardPane(game, client);
-//        boardPane.setLocation(100, 20);
-//        add(boardPane);
+        addBackToMenuListener(evt -> {
+            replaceWith(App.menuScreen);
+            if (client != null) client.disconnect();
+        });
 
         if (client != null && client.player == null) {
             JLabel spectating = new JLabel("SPECTATING");
@@ -149,7 +150,7 @@ public class GameScreen extends Screen implements ActionListener {
             mainMenu.setFont(new Font("", Font.PLAIN, 24));
             mainMenu.setBounds(850, 470, 250, 100);
             mainMenu.addActionListener(evt -> {
-                replaceWith(new MenuScreen());
+                replaceWith(App.menuScreen);
                 if (client != null) client.disconnect();
             });
             add(mainMenu);

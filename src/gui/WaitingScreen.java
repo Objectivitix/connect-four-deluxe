@@ -13,11 +13,16 @@ public class WaitingScreen extends Screen implements ActionListener {
     Client client;
 
     public WaitingScreen(Game game, Client client) {
-        super();
+        super(true);
         setLayout(new GridLayout());
 
         this.game = game;
         this.client = client;
+
+        addBackToMenuListener(evt -> {
+            replaceWith(App.menuScreen);
+            if (client != null) client.disconnect();
+        });
 
         JLabel waiting = new JLabel("Waiting for second player . . .");
         waiting.setFont(new Font("Rasa", Font.BOLD, 36));

@@ -25,7 +25,7 @@ public class DisconnectedScreen extends Screen {
 
         JButton mainMenu = new JButton("Go back to Main Menu");
         mainMenu.setFont(new Font("", Font.PLAIN, 24));
-        mainMenu.addActionListener(evt -> replaceWith(new MenuScreen()));
+        mainMenu.addActionListener(evt -> replaceWith(App.menuScreen));
         center.add(mainMenu);
 
         add(center);

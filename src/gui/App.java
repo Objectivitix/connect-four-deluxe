@@ -4,7 +4,10 @@ import javax.swing.*;
 import java.awt.*;
 
 public class App extends JFrame {
-    public App() {
+    public static JFrame frame;
+    public static MenuScreen menuScreen;
+
+    private App() {
         // set JFrame's title
         super("Connect 4 Deluxe");
 
@@ -17,8 +20,8 @@ public class App extends JFrame {
         // close program if user closes window
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-//        add(new GameScreen(game));
-        add(new MenuScreen());
+        menuScreen = new MenuScreen();
+        add(menuScreen);
 
         pack();
 
@@ -27,5 +30,9 @@ public class App extends JFrame {
 
         // make everything visible
         setVisible(true);
+    }
+
+    public static void start() {
+        frame = new App();
     }
 }
