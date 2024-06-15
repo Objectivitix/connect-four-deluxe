@@ -70,7 +70,7 @@ public class ServerThread extends Thread {
 
     public static void sendToAll(String message) {
         for (ServerThread handler : threads) {
-            handler.out.println(message);
+            if (handler != null) handler.out.println(message);
         }
     }
 
