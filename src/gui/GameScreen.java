@@ -16,6 +16,8 @@ public class GameScreen extends Screen implements ActionListener {
     boolean control;
     JLabel status, spectators;
     JButton playAgain, mainMenu;
+    ImageIcon redTurn, yellowTurn, redWin, yellowWin, tie, pressure;
+    JLabel pressureLabel;
 
     public GameScreen(Game game) {
         this(game, null, false);
@@ -39,7 +41,7 @@ public class GameScreen extends Screen implements ActionListener {
             JLabel spectating = new JLabel("SPECTATING");
             spectating.setFont(new Font("Rasa", Font.BOLD, 48));
             spectating.setForeground(Color.BLUE);
-            spectating.setBounds(100, 50, 300, 100);
+            spectating.setBounds(80, 50, 300, 100);
             add(spectating);
         }
 
@@ -53,13 +55,23 @@ public class GameScreen extends Screen implements ActionListener {
         }
 
         BoardPanel boardPanel = new BoardPanel(game, client);
-        boardPanel.setLocation(100, 120);
+        boardPanel.setLocation(80, 120);
         add(boardPanel);
 
-        status = new JLabel("Red, your turn");
-        status.setFont(new Font("Rasa", Font.BOLD, 30));
-        status.setBounds(850, 50, 300, 200);
+        redTurn = Utils.icon("red-turn.png", 320, 188);
+        yellowTurn = Utils.icon("yellow-turn.png", 320, 188);
+        redWin = Utils.icon("red-win.png", 320, 188);
+        yellowWin = Utils.icon("yellow-win.png", 320, 188);
+        tie = Utils.icon("tie.png", 320, 188);
+        pressure = Utils.icon("pressure.png", 320, 50);
+
+        status = new JLabel(redTurn);
+        status.setBounds(810, 120, 320, 188);
         add(status);
+
+        pressureLabel = new JLabel();
+        pressureLabel.setBounds(755, 0, 320, 100);
+        add(pressureLabel);
 
         timer = new Timer(UPDATE_PERIOD, this);
         timer.start();
@@ -87,30 +99,37 @@ public class GameScreen extends Screen implements ActionListener {
 
         if (client != null) {
             spectators.setText(String.valueOf(client.spectators));
+            if (client.player != null) {
+                if (client.spectators >= 3) {
+                    pressureLabel.setIcon(pressure);
+                } else {
+                    pressureLabel.setIcon(null);
+                }
+            }
         }
 
         boolean terminal = false;
 
         if (game.winner == Token.X) {
-            status.setText("Red wins!");
+            status.setIcon(redWin);
             terminal = true;
         } else if (game.winner == Token.O) {
-            status.setText("Yellow wins!");
+            status.setIcon(yellowWin);
             terminal = true;
         } else if (game.board.isTie()) {
-            status.setText("Wow, it's a tie!");
+            status.setIcon(tie);
             terminal = true;
         } else if (game.currAgent.token == Token.X) {
-            status.setText("Red, your turn");
+            status.setIcon(redTurn);
         } else {
-            status.setText("Yellow, your turn");
+            status.setIcon(yellowTurn);
         }
 
         if (terminal) {
             if (client == null) {
                 playAgain = new JButton("Play Again");
                 playAgain.setFont(new Font("", Font.PLAIN, 24));
-                playAgain.setBounds(850, 300, 250, 100);
+                playAgain.setBounds(850, 350, 250, 100);
                 playAgain.addActionListener(evt -> {
                     game.reset();
                     replaceWith(new GameScreen(game));
@@ -120,7 +139,7 @@ public class GameScreen extends Screen implements ActionListener {
                 if (control) {
                     playAgain = new JButton("Play Again");
                     playAgain.setFont(new Font("", Font.PLAIN, 24));
-                    playAgain.setBounds(850, 300, 250, 100);
+                    playAgain.setBounds(850, 350, 250, 100);
                     playAgain.addActionListener(evt -> client.sendRestart());
                     add(playAgain);
                 }
@@ -128,7 +147,7 @@ public class GameScreen extends Screen implements ActionListener {
 
             mainMenu = new JButton("Main Menu");
             mainMenu.setFont(new Font("", Font.PLAIN, 24));
-            mainMenu.setBounds(850, 420, 250, 100);
+            mainMenu.setBounds(850, 470, 250, 100);
             mainMenu.addActionListener(evt -> {
                 replaceWith(new MenuScreen());
                 if (client != null) client.disconnect();

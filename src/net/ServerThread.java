@@ -34,6 +34,10 @@ public class ServerThread extends Thread {
         try {
             sendToAll(Protocol.join(id));
 
+            if (id == 0) {
+                mother.clearMoves();
+            }
+
             if (id > 1 && !mother.getMoves().isEmpty()) {
                 out.println(Protocol.moves(mother.getMoves()));
             }
@@ -41,7 +45,10 @@ public class ServerThread extends Thread {
             String inputLine;
             while ((inputLine = in.readLine()) != null) {
                 switch (Protocol.getType(inputLine)) {
-                    case "restart" -> sendToAll(inputLine);
+                    case "restart" -> {
+                        mother.clearMoves();
+                        sendToAll(inputLine);
+                    }
 
                     case "move" -> {
                         mother.addMove(Protocol.parse(inputLine));

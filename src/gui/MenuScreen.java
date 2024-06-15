@@ -15,6 +15,7 @@ public class MenuScreen extends Screen implements ActionListener {
     JPanel body, center;
     JButton local, withBot, startServer, joinServer;
     BotMenu menu;
+    JLabel title;
 
     public MenuScreen() {
         // initialize with border layout
@@ -22,9 +23,8 @@ public class MenuScreen extends Screen implements ActionListener {
         setLayout(new BorderLayout());
 
         // create top half
-        JPanel top = new JPanel();
+        JPanel top = Utils.spacer(430);
         top.setLayout(new BorderLayout());
-        top.setPreferredSize(new Dimension(250, 250));
         add(top, BorderLayout.NORTH);
 
         // this is so we can place title in bottom half of top half
@@ -32,8 +32,7 @@ public class MenuScreen extends Screen implements ActionListener {
         top.add(header, BorderLayout.SOUTH);
 
         // create centered title with cool font
-        JLabel title = new JLabel("Welcome to Connect 4 Deluxe!");
-        title.setFont(new Font("Rasa", Font.BOLD, 36));
+        title = new JLabel(Utils.icon("welcome.png", 900, 375));
         title.setHorizontalAlignment(JLabel.CENTER);
         header.add(title);
 
@@ -42,12 +41,12 @@ public class MenuScreen extends Screen implements ActionListener {
         add(body, BorderLayout.CENTER);
 
         // take up space for vertical gap between title and buttons
-        body.add(Utils.spacer(50), BorderLayout.NORTH);
+        body.add(Utils.spacer(20), BorderLayout.NORTH);
 
         // take up space on other 3 sides to constrain center
         body.add(Utils.spacer(150), BorderLayout.WEST);
         body.add(Utils.spacer(150), BorderLayout.EAST);
-        body.add(Utils.spacer(200), BorderLayout.SOUTH);
+        body.add(Utils.spacer(100), BorderLayout.SOUTH);
 
         // create grid layout where we will place menu
         center = new JPanel(new GridLayout(1, 4, 35, 0));
@@ -85,6 +84,8 @@ public class MenuScreen extends Screen implements ActionListener {
         if (e.getSource() == local) {
             replaceWith(new GameScreen(Game.newGame()));
         } else if (e.getSource() == withBot) {
+            title.setIcon(Utils.icon("bot-selection.png", 900, 375));
+
             body.remove(center);
             body.add(menu, BorderLayout.CENTER);
             for (int i = 0; i < menu.levelBtns.length; i++) {

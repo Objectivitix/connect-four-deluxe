@@ -27,6 +27,10 @@ public class Server implements Runnable {
         moves.add(move);
     }
 
+    public synchronized void clearMoves() {
+        moves.clear();
+    }
+
     @Override
     public void run() {
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {

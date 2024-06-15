@@ -50,9 +50,24 @@ public class JoinScreen extends Screen implements ActionListener {
             return;
         }
 
-        status.setText("Connecting . . .");
         status.setForeground(null);
-        paint(getGraphics());
+        Graphics g = getGraphics();
+
+        Thread connecting = new Thread(() -> {
+            int dots = 0;
+            while (true) {
+                status.setText("Connecting" + " .".repeat(dots));
+                paint(g);
+                dots = (dots + 1) % 4;
+                try {
+                    Thread.sleep(700);
+                } catch (InterruptedException ex) {
+                    break;
+                }
+            }
+        });
+
+        connecting.start();
 
         String address = input.getText();
 
@@ -64,6 +79,7 @@ public class JoinScreen extends Screen implements ActionListener {
 
         Client client = new Client(address, game);
         int result = client.connect();
+        connecting.interrupt();
 
         if (result == 0) {
             replaceWith(new WaitingScreen(game, client));
