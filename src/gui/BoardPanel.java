@@ -77,7 +77,7 @@ public class BoardPanel extends JPanel implements ActionListener {
                 }
 
                 @Override
-                public void mouseReleased(MouseEvent e) {
+                public void mouseClicked(MouseEvent e) {
                     if (game.winner == null && !game.board.isTie() && (client == null || client.player != null) && game.board.isValidMove(closureI))
                         column.setBackground(new Color(0, 230, 0));
                 }
