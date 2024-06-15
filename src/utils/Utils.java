@@ -27,4 +27,8 @@ public class Utils {
         return "<html><div style='text-align: center'>"
             + text.replaceAll("\n", "<br>") + "</html>";
     }
+
+    public static void alert(Container parent, String message) {
+        JOptionPane.showMessageDialog(parent, message, "Nope", JOptionPane.WARNING_MESSAGE);
+    }
 }

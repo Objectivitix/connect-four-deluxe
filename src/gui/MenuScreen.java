@@ -1,6 +1,7 @@
 package gui;
 
 import core.*;
+import net.Server;
 import net.ServerThread;
 import utils.Utils;
 
@@ -98,6 +99,11 @@ public class MenuScreen extends Screen implements ActionListener {
             revalidate();
             repaint();
         } else if (e.getSource() == startServer) {
+            if (Server.alreadyHasOneRunning()) {
+                Utils.alert(getRootPane().getParent(), "There's already a server running on this machine!");
+                return;
+            }
+
             ((JFrame) getRootPane().getParent()).addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent e) {

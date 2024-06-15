@@ -19,6 +19,14 @@ public class Server implements Runnable {
         }
     }
 
+    public static boolean alreadyHasOneRunning() {
+        try (ServerSocket ignored = new ServerSocket(PORT)) {
+            return false;
+        } catch (IOException e) {
+            return true;
+        }
+    }
+
     public synchronized List<Integer> getMoves() {
         return moves;
     }
