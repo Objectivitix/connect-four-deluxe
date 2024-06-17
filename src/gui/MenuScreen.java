@@ -90,6 +90,20 @@ public class MenuScreen extends Screen implements ActionListener {
             // must synchronize as we're mutating this object within thread
             synchronized (this) {
                 menu = new BotMenu();
+
+                // bind each bot level button with starting a new game
+                for (int i = 0; i < menu.levelBtns.length; i++) {
+                    int closureI = i;
+                    menu.levelBtns[i].addActionListener(evt -> {
+                        replaceWith(new GameScreen(Game.newGame(closureI)));
+
+                        // change title and menu back, so when user goes
+                        // back to main menu, it'll be the main menu again
+                        title.setIcon(welcome);
+                        body.remove(menu);
+                        body.add(center, BorderLayout.CENTER);
+                    });
+                }
             }
         }).start();
     }
@@ -104,20 +118,6 @@ public class MenuScreen extends Screen implements ActionListener {
             title.setIcon(Utils.icon("bot-selection.png", 900, 375));
             body.remove(center);
             body.add(menu, BorderLayout.CENTER);
-
-            // bind each bot level button with starting a new game
-            for (int i = 0; i < menu.levelBtns.length; i++) {
-                int closureI = i;
-                menu.levelBtns[i].addActionListener(evt -> {
-                    replaceWith(new GameScreen(Game.newGame(closureI)));
-
-                    // change title and menu back, so when user goes
-                    // back to main menu, it'll be the main menu again
-                    title.setIcon(welcome);
-                    body.remove(menu);
-                    body.add(center, BorderLayout.CENTER);
-                });
-            }
 
             // adding 'n removing stuff invalidates layout, so
             // we revalidate before making GUI reflect everything
