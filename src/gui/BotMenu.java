@@ -19,11 +19,13 @@ public class BotMenu extends JPanel {
             new JButton("The High One")
         };
 
+        // add icons to buttons
         levelBtns[0].setIcon(Utils.icon("bob.png", 160, 120));
         levelBtns[1].setIcon(Utils.icon("clarke.png", 160, 120));
         levelBtns[2].setIcon(Utils.icon("athena.png", 160, 120));
         levelBtns[3].setIcon(Utils.icon("high-one.png", 180, 135));
 
+        // adjust spacing and layout of icon and button text
         for (JButton button : levelBtns) {
             button.setFont(new Font("", Font.PLAIN, 24));
             button.setHorizontalTextPosition(JButton.CENTER);

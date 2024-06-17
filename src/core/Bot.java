@@ -15,8 +15,12 @@ public class Bot extends Agent {
     // enough to be free of overflow concerns
     private static final int MY_INF = 999_999_999;
 
+    // when minimaxing, instead of iterating through moves 0-6,
+    // we iterate through this prioritized array instead, so
+    // center-moves (good outcome likelier) are evaluated first
     private static final int[] PSEUDOMOVES = {3, 2, 4, 1, 5, 0, 6};
 
+    // board features, such as an agent having 3-in-a-row w/ adjacent spaces
     private static final Pattern THREE_DOUBLE = Pattern.compile("_AAA_");
     private static final Pattern THREE = Pattern.compile("_AAA(B|$)|(B|^)AAA_");
     private static final Pattern THREE_SPACED = Pattern.compile("A_AA|AA_A");
@@ -24,8 +28,8 @@ public class Bot extends Agent {
     private static final Pattern TWO_GOOD = Pattern.compile("___AA(B|$)|(B|^)AA___");
     private static final Pattern TWO_MID = Pattern.compile("(B|^)__AA(B|$)|(B|^)AA__(B|$)");
 
-    // map of board feature regexes to their weights
-    // (ex. 3-in-a-row w/ adjacent spaces has weight 1_000_000)
+    // map of board feature regexes to their weights, these
+    // are the ones searched for during heuristic calculation
     private final Map<Pattern, Integer> featureWeights = new HashMap<>(Map.of(
         THREE_DOUBLE, 1_000_000,
         THREE, 300_000,
@@ -39,11 +43,14 @@ public class Bot extends Agent {
     private final Board realBoard;
     private Board simBoard;
 
+    // bot's opponent token (used in simulation)
     private final Token opp;
 
     // depth at which we cut off game tree search
     private int searchDepth;
 
+    // bot nerfs: chance of making a random move, and
+    // that of making only a 2-ply move (shallower)
     private double randomMovePossibility = 0;
     private double shallowMovePossibility = 0;
 
@@ -54,6 +61,8 @@ public class Bot extends Agent {
         if (token == Token.X) opp = Token.O;
         else opp = Token.X;
 
+        // adjust bot's depth, features used,
+        // and bad move chances based on level
         switch (level) {
             case 0 -> {
                 searchDepth = 4;
@@ -81,6 +90,7 @@ public class Bot extends Agent {
                 featureWeights.remove(TWO_MID);
             }
 
+            // highest level: looks ahead 7 moves, no nerfs
             default -> searchDepth = 7;
         }
     }
@@ -88,12 +98,16 @@ public class Bot extends Agent {
     // driver method that invokes minimax (or random move)
     @Override
     public int getMove() {
+        // activate possibility of making random moves after 5 turns
         if (realBoard.moves > 5 && Math.random() < randomMovePossibility) {
             return getRandomMove();
         }
 
+        // so if searchDepth is changed for a
+        // shallow move, we can change it back later
         int originalDepth = -1;
 
+        // activate possibility of making shallow moves after 2 turns
         if (realBoard.moves > 2 && Math.random() < shallowMovePossibility) {
             originalDepth = searchDepth;
             searchDepth = 2;
@@ -132,12 +146,14 @@ public class Bot extends Agent {
     private int getRandomMove() {
         List<Integer> possibleMoves = new ArrayList<>();
 
+        // get a list of available moves to make
         for (int i = 0; i < 7; i++) {
             if (realBoard.isValidMove(i)) {
                 possibleMoves.add(i);
             }
         }
 
+        // return a random one using random index
         return possibleMoves.get((int) (Math.random() * possibleMoves.size()));
     }
 

@@ -14,8 +14,11 @@ public class Board {
     // stores "where we're at" for each column
     private final int[] firstEmptyIndices;
 
+    // how many moves have been made in this game
     public int moves = 0;
 
+    // most recent move's board cell position, used
+    // by GUI to highlight most recent token dropped
     public int recentI = -1;
     public int recentJ = -1;
 
@@ -40,6 +43,7 @@ public class Board {
         this.firstEmptyIndices = Arrays.copyOf(firstEmptyIndices, LENGTH);
     }
 
+    // resets the board for a new game
     public void reset() {
         for (int i = 0; i < LENGTH; i++) {
             for (int j = 0; j < WIDTH; j++) {
@@ -63,12 +67,15 @@ public class Board {
     }
 
     public void makeMove(Token token, int i) {
+        // update most recent move position
         recentI = i;
         recentJ = firstEmptyIndices[i];
 
         // use the first empty index to "drop" a new token
         board[i][firstEmptyIndices[i]] = token;
         firstEmptyIndices[i]++;
+
+        // increment number of moves made
         moves++;
     }
 
@@ -82,6 +89,7 @@ public class Board {
     public boolean isTie() {
         for (int k : firstEmptyIndices) {
             if (k < WIDTH) {
+                // there's still space to play, so no tie
                 return false;
             }
         }
@@ -101,8 +109,9 @@ public class Board {
         return null;
     }
 
+    // used for console logging only
     public void printBoard() {
-        // print out column numbers for UX
+        // print out column numbers for clarity
         for (int i = 1; i < LENGTH; i++) {
             System.out.print(i + "  ");
         }
@@ -121,6 +130,7 @@ public class Board {
     }
 
     // gets "game lines" of the board as strings
+    // (see explanation in `_getLines` method)
     public List<String> getLines() {
         List<String> lines = new ArrayList<>();
 

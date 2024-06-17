@@ -2,8 +2,16 @@ package net;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringJoiner;
 
+// utility class that aids implementation of the Connect 4 Protocol™
+// (C4P), used to comm between clients and server. I define C4P as such:
+//
+//     join N    ServerThread@N has started; client N has connected (N >= 0)
+//     move N    a move for column N was made (0 <= N < 7)
+//     moves A B C ...    many moves; used to sync up late-joining spectators
+//     exit -1   server has disconnected
+//     exit N    client N has disconnected; ServerThread@N disposed (N >= 0)
+//     restart   party leader pressed "play again"
 public class Protocol {
     public static final int SERVER_ID = -1;
 
@@ -17,10 +25,14 @@ public class Protocol {
 
     public static String moves(List<Integer> moves) {
         StringBuilder sb = new StringBuilder("moves ");
+
         for (int move : moves) {
             sb.append(move).append(" ");
         }
+
+        // remove trailing space
         sb.deleteCharAt(sb.length() - 1);
+
         return sb.toString();
     }
 
@@ -28,8 +40,12 @@ public class Protocol {
         return "exit " + id;
     }
 
-    public static boolean isValid(String line) {
-        return line.matches("join \\d+|move [0-6]|exit -1|exit \\d+");
+    public static String exitServer() {
+        return exit(SERVER_ID);
+    }
+
+    public static String restart() {
+        return "restart";
     }
 
     public static String getType(String line) {
@@ -42,9 +58,12 @@ public class Protocol {
 
     public static List<Integer> parseMoves(String line) {
         List<Integer> moves = new ArrayList<>();
+
+        // get only the numbers that indicate moves
         for (String s : line.replaceFirst("^moves ", "").split(" ")) {
             moves.add(Integer.parseInt(s));
         }
+
         return moves;
     }
 }

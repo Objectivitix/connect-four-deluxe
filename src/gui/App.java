@@ -5,6 +5,8 @@ import java.awt.*;
 
 public class App extends JFrame {
     public static JFrame frame;
+
+    // store the one and only MenuScreen for efficiency
     public static MenuScreen menuScreen;
 
     private App() {
@@ -20,9 +22,11 @@ public class App extends JFrame {
         // close program if user closes window
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
+        // start with a MenuScreen
         menuScreen = new MenuScreen();
         add(menuScreen);
 
+        // automatically resize JFrame to contents
         pack();
 
         // center window with respect to viewport
